@@ -20,6 +20,7 @@ Load only the context needed for the current task:
 
 - Repository purpose, stack, commands, and architecture: `.agents/context/project.md`
 - Approved complex-task contracts: `.agents/specs/`
+- Reusable cross-agent task definitions, invoked only through the `agent-task` skill or workflow: `.agents/tasks/`
 - Continuation state when the user asks to resume or continue: `.agents/memory/state.md`
 - Specialist role boundaries before delegation: `.agents/roles/`
 - Reusable task workflows: `.agents/skills/`

@@ -11,6 +11,7 @@ Nothing in the template initializes Git, enables CI, installs a plugin, connects
 | `AGENTS.md` | Durable cross-agent working agreements and context routing |
 | `.agents/context/` | Verified, relatively stable repository facts |
 | `.agents/specs/` | Optional contracts for approved complex tasks |
+| `.agents/tasks/` | Reusable cross-agent task definitions with runtime inputs |
 | `.agents/skills/` | Canonical reusable workflows for Antigravity and Codex |
 | `.agents/workflows/` | Thin Antigravity slash-command adapters |
 | `.agents/roles/` | Portable specialist role and permission boundaries |
@@ -27,7 +28,7 @@ For an existing repository:
 2. If the repository has no `AGENTS.md`, copy this template's root file.
 3. If `AGENTS.md` already exists, manually merge the block between `code-agent-template:managed:start` and `code-agent-template:managed:end`; do not replace existing repository instructions.
 4. Review filename collisions before replacing any existing skill, workflow, role, plugin, MCP, hook, or Codex configuration.
-5. Run `python tests/validate_template.py` if the validator was copied with the template.
+5. Run `python -m unittest discover -s tests -p "test_*.py"` and `python tests/validate_template.py` if the tests and validator were copied with the template.
 
 Copying the template never initializes Git or activates `.github` automation. Those remain manual repository decisions.
 
@@ -40,14 +41,33 @@ Copying the template never initializes Git or activates `.github` automation. Th
 
 Antigravity discovers skills from `.agents/skills`, workflows from `.agents/workflows`, workspace MCP configuration from `.agents/mcp_config.json`, hooks from `.agents/hooks.json`, and plugins placed under `.agents/plugins`.
 
+To execute a repository task, invoke `/agent-task` with the task path and named inputs. For example:
+
+```text
+/agent-task Execute .agents/tasks/dependency-audit.md with TARGET="src".
+```
+
 ## Use in Codex
 
 Codex loads root `AGENTS.md`, discovers repository skills in `.agents/skills`, and discovers project-scoped custom agents in `.codex/agents`. Invoke a skill explicitly with `$skill-name`, such as `$onboard-repository`.
+
+To author a reusable task without executing it, invoke `$agent-task`. For example:
+
+```text
+$agent-task Author dependency-audit with required input TARGET and save it under .agents/tasks. Do not execute it.
+```
+
+## Cross-agent tasks
+
+The tracked `.agents/tasks/` library is a portable repository contract, not a native prompt-discovery directory. Codex can author a validated task definition, and Antigravity can later execute the same definition through the shared `agent-task` skill and workflow with per-run values such as `TARGET="src"`.
+
+Task definitions remain unchanged during execution. They contain reusable objectives, constraints, acceptance criteria, and verification requirements, while model choice, context size, approvals, and execution results stay outside the task file. The former dot-ai prompt convention is intentionally unsupported.
 
 ## Workflows
 
 | Workflow | Default behavior |
 |---|---|
+| `agent-task` | Author or execute a validated reusable cross-agent task |
 | `onboard-repository` | Write verified repository context only |
 | `develop-feature` | Plan, risk-check, implement, and verify |
 | `fix-bug` | Reproduce, minimally fix, and add regression coverage |
@@ -70,6 +90,7 @@ Never store credentials in these files. Use environment-variable references, doc
 Run validation on any platform with:
 
 ```text
+python -m unittest discover -s tests -p "test_*.py"
 python tests/validate_template.py
 ```
 
