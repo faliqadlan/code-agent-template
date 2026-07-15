@@ -64,7 +64,9 @@ Request:
 Review <diff, branch, commit, or file set> without making changes.
 ```
 
-### Save continuation state
+### Author a task for another model
+
+Use a task when one agent should prepare an immutable assignment for another model or conversation:
 
 ```text
 Before handling my request, read .agents/AGENTS.md and follow its
@@ -72,8 +74,58 @@ repository-wide instructions. Load only the context and skills relevant
 to the request.
 
 Request:
-Prepare a sanitized project handoff for the next conversation.
+Use the agent-task skill in Author mode. Create version 1 of <task name>
+for preferred model <provider/model>. Use these ordered fallbacks: <models
+or None>. Require these capabilities: <capabilities>. Define a bounded
+execution policy, observable acceptance criteria, and verification.
+Validate and publish the task, but do not execute it.
 ```
+
+Successful validation publishes `.agents/tasks/<task-name>-v1.md` as immutable under the agent workflow. This is a procedural and version-control guarantee, not filesystem locking: the validator checks current structure but cannot detect a historical rewrite. To revise a task, create the next version instead of overwriting the published file.
+
+### Transfer and execute a task
+
+The task records model preferences but cannot switch providers or models by itself. Select the preferred model in the product or runtime, open a conversation with repository access, and send:
+
+```text
+Before handling my request, read .agents/AGENTS.md and follow its
+repository-wide instructions. Load only the context and skills relevant
+to the request.
+
+Request:
+Use the agent-task skill in Execute mode to execute
+.agents/tasks/<task-name>-v1.md with <NAME="value" inputs>. Keep the task
+file unchanged. If this runtime cannot select or verify a compatible
+declared model, stop and give me a prompt for manual transfer.
+```
+
+Fallback is availability-only. The runtime may use the first compatible declared fallback before meaningful output or external side effects when the preferred candidate is unavailable, rate-limited, or capability-incompatible. Verification failure does not authorize a model switch, and an undeclared model must never be substituted.
+
+### Start a new conversation safely
+
+Memory is optional and intended only for unfinished work that must continue in another conversation. Before closing the current conversation, ask the agent to prepare a concise handoff:
+
+```text
+Before I start a new conversation, read .agents/AGENTS.md and use the
+project-handoff skill to create or update .agents/memory/state.md.
+
+Record only verified progress, decisions, verification results, blockers,
+and the next action. Do not continue implementation.
+```
+
+Then start the new conversation with:
+
+```text
+Before handling my request, inspect .agents/, starting with
+.agents/AGENTS.md, and follow its repository-wide instructions. Then read
+.agents/memory/state.md and verify the handoff against the current files,
+working-tree or Git state, and active task before continuing.
+
+Request:
+Continue the previous work from the recorded next action.
+```
+
+Do not create memory for completed work. Never store credentials, tokens, private prompts, hidden reasoning, or full transcripts in `state.md`. The file is ignored by Git, so it remains local to the current working directory unless the user transfers it manually to another machine, clone, or worktree.
 
 ### Generate a project README source
 
@@ -100,8 +152,7 @@ Review `.agents/context/README.md` after generation. Copy or merge it into the c
 | `.agents/context/README.md` | Generated human-facing README source |
 | `.agents/skills/` | Portable task procedures using the Agent Skills format |
 | `.agents/roles/` | Read-only researcher, reviewer, and test-runner contracts |
-| `.agents/specs/` | Template for approved complex implementation contracts |
-| `.agents/tasks/` | Template for reusable repository tasks |
+| `.agents/tasks/` | Template for immutable, versioned cross-agent assignments |
 | `.agents/memory/` | Optional sanitized continuation state |
 | `.agents/scripts/validate_template.py` | Standard-library structural validator |
 
@@ -119,7 +170,7 @@ Run:
 python .agents/scripts/validate_template.py
 ```
 
-The validator checks the portable package structure, skill metadata, role contracts, templates, task syntax, internal hygiene, and absence of removed platform-specific adapters. It uses only the Python standard library.
+The validator checks the portable package structure, skill metadata, role contracts, versioned task contracts, model preferences, bounded execution policies, internal hygiene, and absence of removed platform-specific adapters. It uses only the Python standard library.
 
 ## Safety defaults
 

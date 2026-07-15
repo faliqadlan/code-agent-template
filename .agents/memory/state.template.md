@@ -7,9 +7,13 @@
 
 Describe the current outcome in one or two sentences.
 
-## Active specification
+## Active task
 
-Link `.agents/specs/<task-slug>.md`, or write `None`.
+Link `.agents/tasks/<task-name>-v<version>.md`, or write `None`.
+
+## Selected model
+
+Record the verified provider/model identifier used for the active task, or write `Unknown` or `None`.
 
 ## Working tree or branch
 

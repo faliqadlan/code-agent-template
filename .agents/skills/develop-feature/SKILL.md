@@ -1,6 +1,6 @@
 ---
 name: develop-feature
-description: Plan, implement, and verify a new repository feature. Use when the user requests new behavior or an enhancement and expects code changes, including complex work that needs an approved persistent specification before implementation.
+description: Plan, implement, and verify a new repository feature. Use when the user requests new behavior or an enhancement and expects code changes, including complex work that requires conversational plan approval.
 ---
 
 <!-- code-agent-template:managed -->
@@ -18,7 +18,7 @@ Deliver the smallest coherent feature that meets verified acceptance criteria.
 
 1. Inspect the implementation path and state observable acceptance criteria.
 2. Classify risk. Architectural, destructive, security-sensitive, dependency-changing, externally visible, or materially ambiguous work requires an approved plan.
-3. For approved complex work, create `.agents/specs/<task-slug>.md` from `_template.md`. Do not create a spec for a simple change.
+3. Present high-risk plans in conversation and wait for approval. Create a task through `agent-task` only when the user requests a reusable or cross-agent assignment.
 4. Implement the narrowest design consistent with repository conventions. Preserve unrelated user changes.
 5. Add or update tests at the closest useful level.
 6. Run proportionate formatting, static checks, tests, builds, and visual inspection when the user-visible interface changes.
@@ -26,7 +26,7 @@ Deliver the smallest coherent feature that meets verified acceptance criteria.
 
 ## Output contract
 
-Return the implemented outcome, affected interfaces, verification evidence, residual risk, and any manual follow-up. Update the active specification progress when one exists.
+Return the implemented outcome, affected interfaces, verification evidence, residual risk, and any manual follow-up. Keep execution results outside immutable task files.
 
 ## Boundaries
 

@@ -21,15 +21,14 @@ Load only what the current request needs:
 - Repository purpose, users, behavior, stack, architecture, commands, and constraints: `.agents/context/project.md`
 - Reusable task procedures: the matching `.agents/skills/<skill-name>/SKILL.md`
 - Specialist boundaries for explicitly delegated work: `.agents/roles/`
-- Approved complex-task contracts: `.agents/specs/`
-- Reusable task definitions, only through the `agent-task` skill: `.agents/tasks/`
+- Immutable cross-agent assignments, only through the `agent-task` skill: `.agents/tasks/`
 - Continuation state, only when the user asks to resume, continue, save, or hand off work: `.agents/memory/state.md`
 
 Before applying a skill, read its complete `SKILL.md`. Use its description to match the request. If no skill matches, follow these working agreements and normal repository evidence instead of forcing a skill.
 
 ## Skill routing
 
-- Author or execute a reusable task definition: `agent-task`
+- Author or execute a versioned cross-agent task: `agent-task`
 - Delegate independent research, review, or verification: `delegate-work`
 - Plan, implement, and verify an enhancement: `develop-feature`
 - Diagnose and correct a reproducible defect: `fix-bug`
@@ -44,7 +43,7 @@ Before applying a skill, read its complete `SKILL.md`. Use its description to ma
 1. Establish the requested outcome, scope, constraints, and observable acceptance criteria.
 2. Inspect relevant source, tests, configuration, documentation, and project context.
 3. Decide whether the work is read-only, low risk, or requires an approved plan.
-4. For approved complex work, create or update a specification from `.agents/specs/_template.md`.
+4. For high-risk work, present the plan in conversation and wait for approval. Create a task file only when the user requests a reusable or cross-agent assignment.
 5. Implement the smallest coherent change while preserving behavior outside scope.
 6. Run proportionate checks and inspect their actual output.
 7. Reflect on scope creep, compatibility, security, documentation, and remaining risk.
