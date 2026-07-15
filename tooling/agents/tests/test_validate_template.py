@@ -10,8 +10,8 @@ from pathlib import Path
 from unittest import mock
 
 
-SOURCE_ROOT = Path(__file__).resolve().parents[2]
-VALIDATOR_PATH = SOURCE_ROOT / ".agents/scripts/validate_template.py"
+SOURCE_ROOT = Path(__file__).resolve().parents[3]
+VALIDATOR_PATH = SOURCE_ROOT / "tooling/agents/scripts/validate_template.py"
 SPEC = importlib.util.spec_from_file_location("template_validator", VALIDATOR_PATH)
 assert SPEC and SPEC.loader
 validator_module = importlib.util.module_from_spec(SPEC)
@@ -26,13 +26,61 @@ class TemplateValidatorTests(unittest.TestCase):
         for name in ("README.md", "LICENSE"):
             shutil.copy2(SOURCE_ROOT / name, root / name)
         shutil.copytree(SOURCE_ROOT / "docs", root / "docs")
+        shutil.copytree(
+            SOURCE_ROOT / "tooling",
+            root / "tooling",
+            ignore=shutil.ignore_patterns(".runs", "__pycache__", "*.pyc"),
+        )
         return temporary, root
 
-    def validate(self, root: Path, *, strict: bool = False) -> list[str]:
-        return validator_module.Validator(root, strict_skills=strict).run()
+    def validate(
+        self,
+        root: Path,
+        *,
+        strict: bool = False,
+        runtime_only: bool = False,
+    ) -> list[str]:
+        return validator_module.Validator(
+            root,
+            strict_skills=strict,
+            runtime_only=runtime_only,
+        ).run()
 
     def test_shipped_template_passes(self) -> None:
         self.assertEqual([], self.validate(SOURCE_ROOT))
+
+    def test_operational_package_excludes_maintainer_artifacts(self) -> None:
+        agents = SOURCE_ROOT / ".agents"
+        for relative in ("evals", "scripts", "tests", "LICENSE"):
+            self.assertFalse((agents / relative).exists(), relative)
+        self.assertFalse(any((agents / "skills").glob("*/evals")))
+        self.assertFalse(
+            any(
+                path.name == "__pycache__" or path.suffix == ".pyc"
+                for path in agents.rglob("*")
+            )
+        )
+        executables = {
+            path.relative_to(agents).as_posix()
+            for path in agents.rglob("*")
+            if path.is_file() and path.suffix == ".py"
+        }
+        self.assertEqual(
+            {"skills/agent-task/scripts/validate_task.py"},
+            executables,
+        )
+
+    def test_operational_manifest_has_no_maintainer_fields(self) -> None:
+        manifest = validator_module.json.loads(
+            (SOURCE_ROOT / ".agents/manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(2, manifest["schema_version"])
+        self.assertEqual("2.1.0", manifest["template_version"])
+        self.assertNotIn("python_requires", manifest)
+        self.assertFalse(
+            {"evaluations", "fixtures", "scripts", "tests"}
+            & set(manifest["core"])
+        )
 
     def test_valid_extensions_are_allowed(self) -> None:
         temporary, root = self.make_root()
@@ -104,11 +152,57 @@ class TemplateValidatorTests(unittest.TestCase):
         (root / ".agents/memory/.gitignore").write_text("# empty\n", encoding="utf-8")
         self.assertTrue(any("must ignore only state.md" in error for error in self.validate(root)))
 
-    def test_license_copies_must_match(self) -> None:
+    def test_duplicate_runtime_license_is_rejected(self) -> None:
         temporary, root = self.make_root()
         self.addCleanup(temporary.cleanup)
-        (root / ".agents/LICENSE").write_text("different\n", encoding="utf-8")
-        self.assertTrue(any("must be identical" in error for error in self.validate(root)))
+        (root / ".agents/LICENSE").write_text("duplicate\n", encoding="utf-8")
+        self.assertTrue(any("must not exist" in error for error in self.validate(root)))
+
+    def test_runtime_only_accepts_operational_package_without_tooling(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shutil.copytree(SOURCE_ROOT / ".agents", root / ".agents")
+            self.assertEqual([], self.validate(root, runtime_only=True))
+
+    def test_runtime_validation_does_not_write_bytecode_into_agents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shutil.copytree(SOURCE_ROOT / ".agents", root / ".agents")
+            self.assertEqual([], self.validate(root, runtime_only=True))
+            self.assertFalse(
+                any(
+                    path.name == "__pycache__" or path.suffix == ".pyc"
+                    for path in (root / ".agents").rglob("*")
+                )
+            )
+
+    def test_legacy_maintainer_directory_is_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        (root / ".agents/tests").mkdir()
+        self.assertTrue(
+            any("removed maintainer path" in error for error in self.validate(root))
+        )
+
+    def test_unmanaged_maintainer_script_is_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        (root / "tooling/agents/scripts/unmanaged.py").write_text(
+            "# unmanaged\n",
+            encoding="utf-8",
+        )
+        self.assertTrue(
+            any("script inventory mismatch" in error for error in self.validate(root))
+        )
+
+    def test_orphan_centralized_skill_evals_are_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        orphan = root / "tooling/agents/evals/skills/missing-skill"
+        orphan.mkdir()
+        self.assertTrue(
+            any("unknown skills" in error for error in self.validate(root))
+        )
 
     def test_required_model_needs_a_preference(self) -> None:
         temporary, root = self.make_root()

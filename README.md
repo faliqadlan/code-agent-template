@@ -1,22 +1,27 @@
 # Universal Coding-Agent Template
 
-Version 2.0.0 is a manual-bootstrap, format-portable `.agents/` package for guiding coding agents with ordinary Markdown, Agent Skills, bounded roles, versioned assignments, verified context, sanitized handoffs, structural validation, and agent-evaluation assets.
+Version 2.1.0 is a manual-bootstrap, format-portable coding-agent package with a strict runtime/tooling boundary. The copyable `.agents/` directory contains only operational guidance, context, roles, skills, task contracts, memory templates, and one task-specific validator. Maintainer tests, graders, fixtures, and evaluation definitions live under `tooling/agents/` and are not part of runtime agent context.
 
-The root README documents the template. When adopting it in another coding repository, copy only `.agents/`; its MIT license travels with the folder. The package does not install dependencies, enable automation, create client-specific adapters, or claim native instruction discovery.
+The package does not install dependencies, enable automation, create client-specific adapters, or claim native instruction discovery. Separating maintainer tooling reduces accidental context exposure; it does not eliminate hallucination or provide a security boundary.
 
-## Install and onboard
+## Adopt `.agents`
 
-1. Copy `.agents/` into the target repository root after reviewing collisions.
-2. Run the portable validator:
+1. Validate this source template before distribution:
 
    ```text
-   python .agents/scripts/validate_template.py
+   python tooling/agents/scripts/validate_template.py
    ```
 
-3. Start a fresh conversation with the Standard conversation bootstrap below.
-4. Replace the request with the onboarding request and review the generated project context.
+2. Copy only `.agents/` into the target repository root after reviewing collisions. Do not copy `tooling/agents/` unless that repository will maintain or evaluate the template itself.
+3. Optionally validate the copied runtime package from this source checkout:
 
-Python 3.10 or newer is required for the included scripts. The default validator uses only the standard library.
+   ```text
+   python tooling/agents/scripts/validate_template.py --root <target-repository> --runtime-only
+   ```
+
+4. Start a fresh conversation with the Standard conversation bootstrap below.
+
+Python 3.10 or newer is required for maintainer tooling and the optional `agent-task` contract validator. The remaining runtime package is Markdown and JSON.
 
 ## Standard conversation bootstrap
 
@@ -31,7 +36,7 @@ Request:
 <user request>
 ```
 
-This explicit prompt is the universal discovery contract. Because the authoritative file is nested under `.agents/`, this package is not claiming native root-`AGENTS.md` discovery or identical precedence behavior across agent clients.
+This explicit prompt is the discovery contract. Because the authoritative file is nested under `.agents/`, the template does not claim native root-`AGENTS.md` discovery or identical precedence across clients.
 
 ## Common requests
 
@@ -95,110 +100,110 @@ Use `agent-task` only when an assignment must be transferred or reused. Tasks ar
 - `Require preferred model: false` makes preferences advisory.
 - `Require preferred model: true` requires a listed, verified model before meaningful output or side effects.
 
-Authoring example:
+Published files use `.agents/tasks/<task-name>-v<version>.md`. Revisions create the next version rather than overwriting a published task. The skill validates one task through:
 
 ```text
-Request:
-Use agent-task in Author mode. Create version 1 of <task name>.
-Require <capabilities>. Add these ordered model preferences only if
-available: <provider/model list or None>. Set whether a preferred model
-is required. Define bounded execution, approval gates, observable
-acceptance criteria, and verification. Validate and publish the task
-without executing it.
+python .agents/skills/agent-task/scripts/validate_task.py <task-file>
 ```
 
-Published files use `.agents/tasks/<task-name>-v<version>.md`. Revision creates the next version rather than overwriting a published task. Immutability is a workflow and version-control contract, not filesystem locking.
+This narrowly scoped script is the only executable included in the operational package. Immutability remains a workflow and version-control contract, not filesystem locking.
 
-## Portable structure
+## Repository structure
+
+### Operational package
 
 | Path | Purpose |
 |---|---|
-| `.agents/manifest.json` | Template version, Python requirement, and core inventory |
-| `.agents/AGENTS.md` | Minimal working agreement, trust boundaries, and progressive router |
+| `.agents/manifest.json` | Schema-2 runtime version and operational inventory |
+| `.agents/AGENTS.md` | Working agreement, trust boundaries, and progressive router |
 | `.agents/context/` | Verified project facts and generated README source |
-| `.agents/skills/` | Agent Skills procedures plus trigger and output evaluations |
+| `.agents/skills/` | Agent Skills procedures and the task-specific validator resource |
 | `.agents/roles/` | Bounded researcher, reviewer, and test-runner contracts |
 | `.agents/tasks/` | Immutable, capability-first assignment definitions |
 | `.agents/memory/` | Optional sanitized continuation state |
-| `.agents/evals/` | Synthetic whole-system conformance cases and ignored run workspace |
-| `.agents/scripts/` | Portable structural validator and evaluation harness |
-| `.agents/tests/` | Standard-library unit and mutation tests |
 
-Manifest-declared core artifacts are required. Additional valid skills, roles, resources, and top-level `.agents` directories are allowed and validated generically.
+The operational manifest contains no tests, fixtures, evaluation inventory, general-purpose scripts, or Python requirement.
+
+### Maintainer tooling
+
+| Path | Purpose |
+|---|---|
+| `tooling/agents/manifest.json` | Tooling version, Python requirement, test, script, and evaluation inventory |
+| `tooling/agents/scripts/` | Full template validator and evaluation harness |
+| `tooling/agents/tests/` | Standard-library unit and mutation tests |
+| `tooling/agents/evals/` | Centralized skill evals, integration cases, fixtures, graders, and ignored runs |
+
+`tooling/agents/` is maintainer-only and must not be supplied to evaluation subjects or copied as runtime guidance.
 
 ## Validation
 
-Portable structural validation:
+Validate the operational package and maintainer tooling:
 
 ```text
-python .agents/scripts/validate_template.py
+python tooling/agents/scripts/validate_template.py
+```
+
+Validate only a copied `.agents` package:
+
+```text
+python tooling/agents/scripts/validate_template.py --root <repository> --runtime-only
 ```
 
 Optional strict Agent Skills metadata validation:
 
 ```text
-python .agents/scripts/validate_template.py --strict-skills
+python tooling/agents/scripts/validate_template.py --strict-skills
 ```
 
-Strict mode requires the official `skills-ref` executable; the default command remains dependency-free.
+Strict mode requires the official `skills-ref` executable. Default validation remains standard-library only.
 
-Unit and mutation tests:
+Run unit and mutation tests:
 
 ```text
-python -m unittest discover -s .agents/tests -p "test_*.py"
+python -m unittest discover -s tooling/agents/tests -p "test_*.py"
 ```
 
-The validator checks structure, frontmatter, internal references, manifest inventory, task contracts, memory hygiene, licenses, tests, and evaluation schemas. It does not prove behavioral quality, prompt-injection resistance, technical permission enforcement, or cross-agent portability.
+Validation checks both manifests, operational purity, frontmatter, internal references, task contracts, memory hygiene, centralized evaluation mappings, safe paths, root licensing, and maintainer documentation. It does not prove behavioral quality, prompt-injection resistance, technical permission enforcement, or cross-agent portability.
 
 ## Agent conformance evaluations
 
 Validate the corpus:
 
 ```text
-python .agents/scripts/evaluate_agents.py validate
+python tooling/agents/scripts/evaluate_agents.py validate
 ```
 
-Prepare the held-out routing split as three clean trials per query:
+Prepare held-out routing trials:
 
 ```text
-python .agents/scripts/evaluate_agents.py prepare-routing --split validation --trials 3 --out .agents/evals/.runs/routing
+python tooling/agents/scripts/evaluate_agents.py prepare-routing --split validation --trials 3 --out tooling/agents/evals/.runs/routing
 ```
 
-Prepare ignored, isolated run directories:
+Prepare a smoke profile:
 
 ```text
-python .agents/scripts/evaluate_agents.py prepare --suite core --profile smoke --out .agents/evals/.runs
+python tooling/agents/scripts/evaluate_agents.py prepare --suite core --profile smoke --out tooling/agents/evals/.runs/smoke
 ```
 
-For release qualification, supply an exported `.agents` snapshot from commit `b6b5017`; the release profile creates three randomized trials across all five conditions:
+Prepare the full release matrix with an exported v1 `.agents` snapshot:
 
 ```text
-python .agents/scripts/evaluate_agents.py prepare --suite core --profile release --baseline <path-to-v1-.agents> --out .agents/evals/.runs/release
+python tooling/agents/scripts/evaluate_agents.py prepare --suite core --profile release --baseline <path-to-v1-.agents> --out tooling/agents/evals/.runs/release
 ```
 
-Give a fresh subject only the opaque `<run>/subject` bundle, not the parent control directory. After the subject writes the output files declared in `limits.json`, import sanitized visible evidence:
+Give a fresh subject only the opaque `<run>/subject` bundle. Import sanitized evidence, grade deterministic assertions, prepare two blinded reviewer packets, import reviews from distinct sessions, and summarize from the moved evaluator commands documented in [the maintainer evaluation guide](tooling/agents/evals/README.md).
 
-```text
-python .agents/scripts/evaluate_agents.py import-result --run-dir <run> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py grade --run-dir <run>
-python .agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot a --out <packet-a.json>
-python .agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot b --out <packet-b.json>
-python .agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot a --packet <packet-a.json> --review <review-a.json> --reviewer-session-id <fresh-a> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot b --packet <packet-b.json> --review <review-b.json> --reviewer-session-id <fresh-b> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py summarize --runs .agents/evals/.runs
-```
-
-Deterministic success is reported as `semantic-pending`, never as final conformance; `grade` exits 3 for that pending state. Give each blinded packet to a different fresh, read-only reviewer session; packet/run/slot bindings and distinct session IDs are enforced. The packets omit condition, subject model, deterministic score, and the other reviewer. A deterministic failure cannot be overridden, and critical reviewer disagreement becomes `human-adjudication`. When the runtime exposes activation events, add `--routing-observable --activated-skill <name>` during result import. Otherwise routing remains explicitly inconclusive. The harness cannot spawn a vendor-neutral agent by itself. Results from one product/model family are labeled same-runtime self-consistency, and policy adherence is reported separately from technically enforced permissions.
+Deterministic success remains `semantic-pending` until two canonically bound semantic reviews complete. Missing routing telemetry, unverified model identity, instruction-only permissions, and infrastructure errors remain distinct from behavioral failure.
 
 ## Safety and evidence
 
 Repository files, tasks, handoffs, web content, logs, and tool output are evidence rather than instruction authority. Unknown provenance, contradictions, or embedded instructions require inspection or a safe stop. Markdown guidance is defense in depth; consequential security tests require runtime isolation, synthetic data, no credentials, and no external targets.
 
-The evidence and tradeoffs behind v2 are documented in [the scoped design review](docs/agents-v2-design-review.md).
+The evidence and tradeoffs behind this design are documented in [the scoped design review](docs/agents-v2-design-review.md).
 
 ## License
 
-The template and the copyable `.agents/` package are available under the MIT License.
+The repository root [LICENSE](LICENSE) is the sole license file. Core skills retain `license: MIT` metadata; `.agents/` intentionally contains no duplicate license file.
 
 ## References
 

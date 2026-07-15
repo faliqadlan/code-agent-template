@@ -11,8 +11,8 @@ import unittest
 from pathlib import Path
 
 
-SOURCE_ROOT = Path(__file__).resolve().parents[2]
-EVALUATOR_PATH = SOURCE_ROOT / ".agents/scripts/evaluate_agents.py"
+SOURCE_ROOT = Path(__file__).resolve().parents[3]
+EVALUATOR_PATH = SOURCE_ROOT / "tooling/agents/scripts/evaluate_agents.py"
 SPEC = importlib.util.spec_from_file_location("agents_evaluator_tests", EVALUATOR_PATH)
 assert SPEC and SPEC.loader
 evaluator = importlib.util.module_from_spec(SPEC)
@@ -38,7 +38,7 @@ class EvaluationContractTests(unittest.TestCase):
         manifest = evaluator.load_json(SOURCE_ROOT / ".agents/manifest.json")
         for skill in manifest["core"]["skills"]:
             payload = evaluator.load_json(
-                SOURCE_ROOT / ".agents/skills" / skill / "evals/trigger_queries.json"
+                SOURCE_ROOT / "tooling/agents/evals/skills" / skill / "trigger_queries.json"
             )
             queries = payload["queries"]
             self.assertEqual(20, len(queries))
@@ -49,7 +49,7 @@ class EvaluationContractTests(unittest.TestCase):
             self.assertEqual(8, sum(item["split"] == "validation" for item in queries))
 
     def test_fixture_preconditions_match_case_claims(self) -> None:
-        fixtures = SOURCE_ROOT / ".agents/evals/fixtures"
+        fixtures = SOURCE_ROOT / "tooling/agents/evals/fixtures"
         basic = subprocess.run(
             ["python", "-m", "unittest", "discover", "-s", "tests"],
             cwd=fixtures / "basic",
@@ -98,6 +98,7 @@ class EvaluationContractTests(unittest.TestCase):
             self.assertFalse((subject_agents / "tests").exists())
             self.assertFalse((subject_agents / "scripts/evaluate_agents.py").exists())
             self.assertFalse(any(subject_agents.glob("skills/*/evals")))
+            self.assertFalse((subject_agents / "LICENSE").exists())
             self.assertNotIn("v2-full", run_dirs[0].name)
             self.assertNotIn("condition", (run_dirs[0] / "subject/limits.json").read_text(encoding="utf-8"))
 
@@ -366,6 +367,29 @@ class EvaluationContractTests(unittest.TestCase):
             self.assertNotIn("review-code", manifest["core"]["skills"])
             self.assertNotIn("ablated_skill", json.dumps(manifest))
 
+    def test_agent_task_ablation_removes_task_validator_inventory(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory) / "runs"
+            evaluator.prepare_runs(
+                argparse.Namespace(
+                    root=SOURCE_ROOT,
+                    suite="core",
+                    case="agent-task-author-task",
+                    profile="smoke",
+                    conditions="v2-skill-ablation",
+                    trials=1,
+                    out=out,
+                    baseline=None,
+                    seed=17,
+                )
+            )
+            run_dir = next(path for path in out.iterdir() if path.is_dir())
+            agents = run_dir / "subject/workspace/.agents"
+            manifest = evaluator.load_json(agents / "manifest.json")
+            self.assertNotIn("agent-task", manifest["core"]["skills"])
+            self.assertEqual([], manifest["core"]["task_validators"])
+            self.assertFalse((agents / "skills/agent-task").exists())
+
     def test_deterministic_success_exits_pending_not_pass(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             out = Path(directory) / "runs"
@@ -430,7 +454,8 @@ class EvaluationContractTests(unittest.TestCase):
             )
             self.assertEqual(0, evaluator.prepare_routing_runs(args))
             payload = evaluator.load_json(
-                SOURCE_ROOT / ".agents/skills/review-code/evals/trigger_queries.json"
+                SOURCE_ROOT
+                / "tooling/agents/evals/skills/review-code/trigger_queries.json"
             )
             expected = sum(item["split"] == "validation" for item in payload["queries"]) * 3
             runs = [path for path in out.iterdir() if path.is_dir()]

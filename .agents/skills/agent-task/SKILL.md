@@ -34,12 +34,12 @@ Create and execute immutable cross-agent assignments without weakening repositor
 7. Reference each declared input as `$NAME`. Use `$$` for a literal dollar sign.
 8. Set `Require preferred model` to `false` for advisory preferences or `true` only when the user requires a listed model. Choose `single-pass` with one iteration or `agentic-loop` with a positive finite limit. Define observable acceptance criteria, concrete verification, approval gates, and the output contract.
 9. Keep mutable run status, progress, results, secrets, private prompts, hidden reasoning, and transcript content out of the task.
-10. Run `python .agents/scripts/validate_template.py`. Fix the draft if validation fails. Successful validation publishes the task as immutable; report its path without executing it.
+10. Run `python .agents/skills/agent-task/scripts/validate_task.py <task-path>`. Fix the draft if validation fails. If Python or the validator is unavailable, stop as blocked rather than claiming validation. Successful validation publishes the task as immutable; report its path without executing it.
 
 ## Execute mode
 
 1. Require a Markdown task path under `.agents/tasks/`; never execute `_template.md`.
-2. Read the task and applicable repository instructions. Run the template validator before executing and stop if it fails.
+2. Read the task and applicable repository instructions. Run `python .agents/skills/agent-task/scripts/validate_task.py <task-path>` before executing and stop if it fails or is unavailable.
 3. Parse the Runtime inputs declarations and values supplied by the user. Use defaults for omitted optional values and ask for every missing required value.
 4. Resolve `$NAME` references in working context only. Interpret `$$` as a literal dollar sign and do not edit the task file with resolved values or results.
 5. Verify required capabilities. Try ordered model preferences when available; when they are advisory, another capable model may continue if the selection is reported honestly.

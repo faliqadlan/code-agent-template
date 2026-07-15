@@ -2,7 +2,7 @@
 
 **Review type:** Scoped evidence review, not an exhaustive systematic or PRISMA review
 **Access date:** 2026-07-15
-**Decision target:** Universal Coding-Agent Template 2.0.0
+**Decision target:** Universal Coding-Agent Template 2.1.0
 
 ## Method
 
@@ -14,7 +14,7 @@ The review prioritized normative specifications, official engineering guidance, 
 |---|---|---|---|---|
 | 1 | Normative specification: Agent Skills, accessed 2026-07-15 | Skills require `SKILL.md`, constrained metadata, and support progressive resources and optional standard fields. | Validate the open metadata contract, keep core skills concise, allow extensions, and offer optional `skills-ref`. | Structural conformance does not establish behavior or safety. |
 | 2 | Official guidance: Optimizing skill descriptions, accessed 2026-07-15 | Trigger tests should include roughly 8–10 positive and 8–10 near-miss queries, repeated runs, and a held-out split. | Ship balanced train/validation routing queries with three planned trials and a 0.5 query threshold. | Trigger observability differs by client; self-report is insufficient. |
-| 3 | Official guidance: Evaluating skill output quality, accessed 2026-07-15 | Compare with-skill against without/previous skill in clean contexts; prefer objective assertions and human review. | Ship paired output cases, isolate subject workspaces, grade deterministic outcomes first, and keep semantic review separate. | Vendor examples may expose richer traces than portable clients. |
+| 3 | Official guidance: Evaluating skill output quality, accessed 2026-07-15 | Compare with-skill against without/previous skill in clean contexts; prefer objective assertions and human review. The guide normally stores authored eval cases inside each skill. | Ship paired output cases, isolate subject workspaces, grade deterministic outcomes first, and keep semantic review separate. Centralize authored evals in maintainer tooling for the copyable runtime distribution. | The external eval location intentionally differs from the guide and requires validator-enforced skill mappings. |
 | 4 | Preprint: Gloaguen et al., 2026 | Context files often increased cost by more than 20% and did not significantly improve task success; unnecessary guidance can harm. | Keep `.agents/AGENTS.md` minimal and progressively load task procedures. Add no-template and ablation controls. | Benchmarks emphasize Python/GitHub tasks and do not test this manual bootstrap directly. |
 | 5 | Workshop/preprint: Lulla et al., 2026 | One paired study found lower median runtime and output-token use with root `AGENTS.md`. | Measure time/tokens when available and document the conflicting empirical picture. | Ten repositories, 124 PRs, and no full correctness evaluation; conflicts with source 4. |
 | 6 | Preprint: dos Santos et al., 2026 | Context bloat, lint leakage, skill leakage, and conflicting instructions are prevalent configuration smells. | Keep global guidance short, avoid duplicating discoverable rules, validate references, and route detailed workflows to skills. | Initial catalog based on 100 repositories and recent preprint evidence. |
@@ -24,6 +24,7 @@ The review prioritized normative specifications, official engineering guidance, 
 | 10 | Preprint: Skill-Inject, 2026 | Skill files create a supply-chain injection surface; reported attacks succeeded at high rates across frontier models. | Treat skills and bundled resources as untrusted, preserve approval boundaries, and avoid claiming that validation proves safety. | Recent benchmark; results depend on model and harness. |
 | 11 | NIST AI 100-2 E2025 | Standard terminology covers direct/indirect prompt injection, poisoning, agent threats, and mitigation limits. | Use explicit trust boundaries, provenance, revalidation, and honest security limitations. | Taxonomy and guidance do not prescribe this exact file architecture. |
 | 12 | OWASP Agentic Top 10, 2026 | Agent goal hijacking, supply-chain compromise, memory/context poisoning, insecure inter-agent communication, and cascading failures are material risks. | Sanitize handoffs, reject transferred authority, prevent nested delegation, and separate policy adherence from sandbox enforcement. | Community risk framework, not a certification regime. |
+| 13 | Official guidance: Adding Agent Skills support, accessed 2026-07-16 | Clients may list bundled skill resources and resolve relative files from the skill directory. | Keep runtime skill resources narrowly relevant and move maintainer eval definitions outside the distributable `.agents/` package. | Implementations vary; external tooling remains discoverable to agents with unrestricted repository access. |
 
 ## Key conflicts and synthesis
 
@@ -32,6 +33,14 @@ The two direct context-file effectiveness studies do not support a universal per
 The Agent Skills reference validator is useful but narrow. The template's portable validator covers internal contracts and can optionally invoke `skills-ref`, while behavioral routing and outcome quality are tested separately.
 
 Security literature shows that Markdown instructions cannot create a security boundary. Version 2 adds provenance and trust rules, but continues to require runtime-enforced permissions, isolated synthetic fixtures, and honest `unverified` results when enforcement or activation is not observable.
+
+## Version 2.1 operational/tooling separation
+
+Agent clients may disclose or enumerate resources bundled beside `SKILL.md`. Version 2.1 therefore treats `.agents/` as the distributable operational package and moves tests, general-purpose scripts, fixtures, graders, and authored eval definitions to `tooling/agents/`. Centralized skill evals use `tooling/agents/evals/skills/<skill>/`, and validation requires exactly one mapped directory for every manifest-declared core skill.
+
+The only executable retained in `.agents/` is the `agent-task` contract validator under that skill's `scripts/` resource. It is relevant only after the skill activates and is also imported by the full maintainer validator, preventing duplicate task-contract implementations. The operational manifest contains no Python, test, fixture, evaluation, or maintainer-tooling fields.
+
+This separation reduces accidental prompt and resource exposure but cannot prevent an agent from discovering maintainer files through unrestricted repository tools. The bootstrap, trust boundaries, and runtime permissions remain necessary.
 
 ## Evaluation interpretation
 
@@ -47,6 +56,7 @@ Results must never be pooled to conceal a failing runtime. Public fixture cases 
 - Vendor guidance is useful primary operational evidence but not independent consensus.
 - Client discovery, skill activation telemetry, sandboxing, and model identity vary.
 - The current collaboration runtime shares a product family and filesystem across subagents.
+- Moving authored evals outside skill directories is a distribution-specific deviation from official examples.
 - Static validation and benign adversarial cases cannot establish complete security.
 - The evidence review must be refreshed as standards, clients, and empirical results evolve.
 
@@ -64,3 +74,4 @@ Results must never be pooled to conceal a failing runtime. Public fixture cases 
 10. [Skill-Inject](https://arxiv.org/abs/2602.20156)
 11. [NIST AI 100-2 E2025](https://doi.org/10.6028/NIST.AI.100-2e2025)
 12. [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+13. [Adding Agent Skills support](https://agentskills.io/client-implementation/adding-skills-support)

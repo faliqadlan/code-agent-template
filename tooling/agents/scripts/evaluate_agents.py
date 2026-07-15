@@ -21,7 +21,9 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-DEFAULT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_ROOT = Path(__file__).resolve().parents[3]
+TOOLING_ROOT_REL = Path("tooling/agents")
+EVALS_ROOT_REL = TOOLING_ROOT_REL / "evals"
 CONDITIONS = {
     "v2-full",
     "v2-skill-ablation",
@@ -113,7 +115,7 @@ def matches_any(path: str, patterns: Iterable[str]) -> bool:
 
 
 def core_cases(root: Path) -> list[dict[str, Any]]:
-    payload = load_json(root / ".agents/evals/cases/core.json")
+    payload = load_json(root / EVALS_ROOT_REL / "cases/core.json")
     return payload.get("cases", []) if isinstance(payload, dict) else []
 
 
@@ -127,23 +129,50 @@ def find_case(root: Path, case_id: str) -> dict[str, Any]:
 def collect_validation_errors(root: Path) -> list[str]:
     root = root.resolve()
     agents = root / ".agents"
+    tooling = root / TOOLING_ROOT_REL
+    evals_root = root / EVALS_ROOT_REL
     errors: list[str] = []
-    manifest_path = agents / "manifest.json"
-    cases_path = agents / "evals/cases/core.json"
-    if not manifest_path.is_file() or not cases_path.is_file():
-        return ["Evaluation validation requires .agents/manifest.json and .agents/evals/cases/core.json"]
+    runtime_manifest_path = agents / "manifest.json"
+    tooling_manifest_path = tooling / "manifest.json"
+    cases_path = evals_root / "cases/core.json"
+    if not runtime_manifest_path.is_file() or not tooling_manifest_path.is_file() or not cases_path.is_file():
+        return [
+            "Evaluation validation requires .agents/manifest.json, "
+            "tooling/agents/manifest.json, and tooling/agents/evals/cases/core.json"
+        ]
     try:
-        manifest = load_json(manifest_path)
+        runtime_manifest = load_json(runtime_manifest_path)
+        tooling_manifest = load_json(tooling_manifest_path)
         payload = load_json(cases_path)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         return [f"Evaluation JSON is invalid: {exc}"]
-    skills = manifest.get("core", {}).get("skills", [])
-    evaluation_inventory = manifest.get("core", {}).get("evaluations", {})
+    skills = runtime_manifest.get("core", {}).get("skills", [])
+    evaluation_inventory = tooling_manifest.get("evaluations", {})
+    if not (agents / "skills").is_dir() or not (evals_root / "skills").is_dir():
+        return errors + [
+            "Evaluation validation requires .agents/skills and tooling/agents/evals/skills"
+        ]
+    discovered_skills = {
+        path.name
+        for path in (agents / "skills").iterdir()
+        if path.is_dir() and (path / "SKILL.md").is_file()
+    }
+    centralized_eval_skills = {
+        path.name
+        for path in (evals_root / "skills").iterdir()
+        if path.is_dir()
+    }
+    orphan_eval_skills = centralized_eval_skills - discovered_skills
+    if orphan_eval_skills:
+        errors.append(
+            "Centralized evaluations reference unknown skills: "
+            f"{sorted(orphan_eval_skills)}"
+        )
     if payload.get("schema_version") != 1 or payload.get("suite") != "core":
-        errors.append(".agents/evals/cases/core.json: invalid suite header")
+        errors.append("tooling/agents/evals/cases/core.json: invalid suite header")
     cases = payload.get("cases")
     if not isinstance(cases, list):
-        return errors + [".agents/evals/cases/core.json: cases must be a list"]
+        return errors + ["tooling/agents/evals/cases/core.json: cases must be a list"]
     ids: set[str] = set()
     coverage = {skill: set() for skill in skills}
     required_case_fields = {
@@ -163,7 +192,7 @@ def collect_validation_errors(root: Path) -> list[str]:
         "synthetic_data_only",
     }
     for index, case in enumerate(cases):
-        label = f".agents/evals/cases/core.json:cases[{index}]"
+        label = f"tooling/agents/evals/cases/core.json:cases[{index}]"
         if not isinstance(case, dict):
             errors.append(f"{label}: case must be an object")
             continue
@@ -190,7 +219,7 @@ def collect_validation_errors(root: Path) -> list[str]:
         if not isinstance(case.get("request"), str) or not case.get("request", "").strip():
             errors.append(f"{label}: request must be non-empty")
         fixture = case.get("fixture")
-        evals_root = (agents / "evals").resolve()
+        resolved_evals_root = evals_root.resolve()
         if (
             not isinstance(fixture, str)
             or Path(fixture).is_absolute()
@@ -198,9 +227,9 @@ def collect_validation_errors(root: Path) -> list[str]:
         ):
             errors.append(f"{label}: unsafe fixture path")
         else:
-            resolved_fixture = (evals_root / fixture).resolve()
-            if evals_root not in resolved_fixture.parents:
-                errors.append(f"{label}: fixture escapes .agents/evals")
+            resolved_fixture = (resolved_evals_root / fixture).resolve()
+            if resolved_evals_root not in resolved_fixture.parents:
+                errors.append(f"{label}: fixture escapes tooling/agents/evals")
             elif not resolved_fixture.is_dir():
                 errors.append(f"{label}: fixture does not exist: {fixture}")
             else:
@@ -250,7 +279,7 @@ def collect_validation_errors(root: Path) -> list[str]:
         errors.append("Manifest integration_cases count is stale")
 
     for skill in skills:
-        eval_root = agents / "skills" / skill / "evals"
+        eval_root = evals_root / "skills" / skill
         trigger_path = eval_root / "trigger_queries.json"
         output_path = eval_root / "evals.json"
         try:
@@ -375,13 +404,10 @@ def project_subject_manifest(agents: Path, ablated_skill: str | None = None) -> 
     manifest = load_json(manifest_path)
     core = manifest.get("core", {})
     core["files"] = [name for name in core.get("files", []) if (agents / name).is_file()]
-    core["tests"] = []
     if ablated_skill:
         core["skills"] = [name for name in core.get("skills", []) if name != ablated_skill]
-    manifest["subject_projection"] = {
-        "evaluation_definitions_excluded": True,
-    }
-    core.pop("evaluations", None)
+        if ablated_skill == "agent-task":
+            core["task_validators"] = []
     write_json(manifest_path, manifest)
 
 
@@ -403,6 +429,11 @@ def validate_subject_projection(agents: Path) -> None:
     missing = [name for name in core["files"] if not (agents / name).is_file()]
     missing += [f"skills/{name}" for name in core["skills"] if not (agents / "skills" / name / "SKILL.md").is_file()]
     missing += [f"roles/{name}.md" for name in core["roles"] if not (agents / "roles" / f"{name}.md").is_file()]
+    missing += [
+        name
+        for name in core.get("task_validators", [])
+        if not (agents / name).is_file()
+    ]
     if missing:
         raise ValueError(f"Invalid subject projection; missing declared artifacts: {missing}")
 
@@ -458,7 +489,7 @@ def prepare_runs(args: argparse.Namespace) -> int:
             raise FileExistsError(f"Run already exists: {run_dir}")
         subject = run_dir / "subject"
         workspace = subject / "workspace"
-        fixture = root / ".agents/evals" / case["fixture"]
+        fixture = root / EVALS_ROOT_REL / case["fixture"]
         copy_fixture(fixture, workspace)
         if condition != "no-template":
             source = args.baseline if condition == "v1-full" else root / ".agents"
@@ -508,7 +539,7 @@ def prepare_runs(args: argparse.Namespace) -> int:
             run_dir / "run.json",
             {
                 "schema_version": 1,
-                "suite_version": "2.0.0",
+                "suite_version": "2.1.0",
                 "case_id": case["id"],
                 "condition": condition,
                 "trial": trial,
@@ -546,7 +577,7 @@ def prepare_routing_runs(args: argparse.Namespace) -> int:
     queries: list[tuple[str, dict[str, Any]]] = []
     for skill in skills:
         payload = load_json(
-            root / ".agents/skills" / skill / "evals/trigger_queries.json"
+            root / EVALS_ROOT_REL / "skills" / skill / "trigger_queries.json"
         )
         for query in payload["queries"]:
             if args.split == "all" or query["split"] == args.split:
@@ -570,7 +601,7 @@ def prepare_routing_runs(args: argparse.Namespace) -> int:
             raise FileExistsError(f"Run already exists: {run_dir}")
         subject = run_dir / "subject"
         workspace = subject / "workspace"
-        copy_fixture(root / ".agents/evals/fixtures/routing", workspace)
+        copy_fixture(root / EVALS_ROOT_REL / "fixtures/routing", workspace)
         copy_operational_agents(root / ".agents", workspace / ".agents")
         project_subject_manifest(workspace / ".agents")
         validate_subject_projection(workspace / ".agents")
@@ -602,7 +633,7 @@ def prepare_routing_runs(args: argparse.Namespace) -> int:
             run_dir / "run.json",
             {
                 "schema_version": 1,
-                "suite_version": "2.0.0",
+                "suite_version": "2.1.0",
                 "kind": "routing",
                 "query_id": query["id"],
                 "target_skill": skill,
@@ -1331,7 +1362,7 @@ def summarize(args: argparse.Namespace) -> int:
     manifest = load_json(root / ".agents/manifest.json")
     for skill in manifest["core"]["skills"]:
         payload = load_json(
-            root / ".agents/skills" / skill / "evals/trigger_queries.json"
+            root / EVALS_ROOT_REL / "skills" / skill / "trigger_queries.json"
         )
         expected_validation_queries.update(
             item["id"] for item in payload["queries"] if item["split"] == "validation"

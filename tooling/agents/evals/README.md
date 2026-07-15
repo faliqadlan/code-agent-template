@@ -11,7 +11,7 @@ These fixtures support portable validation and optional live-agent conformance t
 4. Import sanitized visible results and action logs.
 5. Grade deterministic assertions before any blinded semantic review.
 
-Subject workspaces exclude this directory, per-skill `evals/` directories, tests, grader rubrics, expected answers, condition labels, and previous results. Run directories have opaque names. Give subjects only the `<run>/subject` bundle; the parent directory is harness control data. Use synthetic fixtures only. Never store private prompts, hidden reasoning, unrestricted transcripts, credentials, or consequential targets.
+Subject workspaces exclude this maintainer directory, centralized skill evals, tests, grader rubrics, expected answers, condition labels, and previous results. Run directories have opaque names. Give subjects only the `<run>/subject` bundle; the parent directory is harness control data. Use synthetic fixtures only. Never store private prompts, hidden reasoning, unrestricted transcripts, credentials, or consequential targets.
 
 ## Conditions
 
@@ -38,17 +38,17 @@ Report raw counts by case, condition, runtime, and model. Keep infrastructure er
 ## Commands
 
 ```text
-python .agents/scripts/evaluate_agents.py validate
-python .agents/scripts/evaluate_agents.py prepare-routing --split validation --trials 3 --out .agents/evals/.runs/routing
-python .agents/scripts/evaluate_agents.py prepare --suite core --profile smoke --out .agents/evals/.runs/smoke
-python .agents/scripts/evaluate_agents.py prepare --suite core --profile release --baseline <path-to-v1-.agents> --out .agents/evals/.runs/release
-python .agents/scripts/evaluate_agents.py import-result --run-dir <run> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py grade --run-dir <run>
-python .agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot a --out <packet-a.json>
-python .agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot b --out <packet-b.json>
-python .agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot a --packet <packet-a.json> --review <review-a.json> --reviewer-session-id <fresh-a> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot b --packet <packet-b.json> --review <review-b.json> --reviewer-session-id <fresh-b> --runtime-id <id> --model-id <id>
-python .agents/scripts/evaluate_agents.py summarize --runs .agents/evals/.runs
+python tooling/agents/scripts/evaluate_agents.py validate
+python tooling/agents/scripts/evaluate_agents.py prepare-routing --split validation --trials 3 --out tooling/agents/evals/.runs/routing
+python tooling/agents/scripts/evaluate_agents.py prepare --suite core --profile smoke --out tooling/agents/evals/.runs/smoke
+python tooling/agents/scripts/evaluate_agents.py prepare --suite core --profile release --baseline <path-to-v1-.agents> --out tooling/agents/evals/.runs/release
+python tooling/agents/scripts/evaluate_agents.py import-result --run-dir <run> --runtime-id <id> --model-id <id>
+python tooling/agents/scripts/evaluate_agents.py grade --run-dir <run>
+python tooling/agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot a --out <packet-a.json>
+python tooling/agents/scripts/evaluate_agents.py prepare-review --run-dir <run> --reviewer-slot b --out <packet-b.json>
+python tooling/agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot a --packet <packet-a.json> --review <review-a.json> --reviewer-session-id <fresh-a> --runtime-id <id> --model-id <id>
+python tooling/agents/scripts/evaluate_agents.py import-review --run-dir <run> --reviewer-slot b --packet <packet-b.json> --review <review-b.json> --reviewer-session-id <fresh-b> --runtime-id <id> --model-id <id>
+python tooling/agents/scripts/evaluate_agents.py summarize --runs tooling/agents/evals/.runs
 ```
 
 Action logs should include a visible tool name, a category, status, canonical path, exit status when relevant, and already-redacted arguments. The importer applies another conservative redaction pass and independently infers forbidden categories. Assert `--trace-completeness complete` only for a supported runtime adapter, not a subject-authored log. If the runtime exposes skill-activation events, import them with `--routing-observable --activated-skill <name>`; self-reported routing is not sufficient. A successful deterministic grade remains `semantic-pending` and exits 3 until two canonically bound reviews from distinct sessions are imported.
