@@ -7,7 +7,7 @@
     "scripts/validate_template.py"
   ],
   "tests": [
-    "tests/test_evaluation_contract.py",
+    "tests/test_evaluation_suite.py",
     "tests/test_task_validator.py",
     "tests/test_validate_template.py"
   ],
