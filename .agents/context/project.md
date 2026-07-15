@@ -4,9 +4,17 @@
 **Status:** Uninitialized  
 **Last verified:** Never
 
-Run `onboard-repository` before relying on this file. Every populated claim must cite a repository file, configuration entry, or successful command.
+Run the `onboard-repository` procedure before relying on this file. Every populated claim must cite a repository file, configuration entry, or successful command. Preserve the distinction between verified current behavior and proposed behavior.
 
 ## Purpose
+
+Unknown.
+
+## Intended users
+
+Unknown.
+
+## Current capabilities and flows
 
 Unknown.
 
@@ -20,26 +28,34 @@ Unknown.
 
 ## Commands
 
-| Purpose | Command | Evidence |
-|---|---|---|
-| Install | Unknown | Not yet inspected |
-| Develop | Unknown | Not yet inspected |
-| Test | Unknown | Not yet inspected |
-| Lint or format | Unknown | Not yet inspected |
-| Build | Unknown | Not yet inspected |
+| Purpose | Command | Evidence | Verification status |
+|---|---|---|---|
+| Install | Unknown | Not yet inspected | Not run |
+| Develop | Unknown | Not yet inspected | Not run |
+| Test | Unknown | Not yet inspected | Not run |
+| Lint or format | Unknown | Not yet inspected | Not run |
+| Build | Unknown | Not yet inspected | Not run |
+
+## Data and integrations
+
+Unknown. Record configuration and environment-variable names, never credential values.
 
 ## Repository conventions
 
 Unknown.
 
-## External systems and permissions
-
-Unknown. Record configuration names and authentication mechanisms, never credential values.
-
 ## Constraints and hazards
 
 Unknown.
 
-## Open questions
+## Proposed behavior
+
+None verified. Record only explicit, approved product direction and keep it separate from current implementation.
+
+## Known gaps
 
 - Repository onboarding has not been completed.
+
+## Open questions
+
+- What repository evidence remains to be inspected?

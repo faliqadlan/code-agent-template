@@ -1,5 +1,0 @@
-# code-agent-template:managed
-interface:
-  display_name: "Review Code"
-  short_description: "Review code without changing the repository."
-  default_prompt: "Review this code and report actionable findings."

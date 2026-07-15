@@ -1,6 +1,6 @@
 ---
 name: project-handoff
-description: Create concise sanitized continuation state for a later conversation. Use when the user asks to save progress, prepare a handoff, pause complex work, or make a future Antigravity or Codex session resume from repository evidence.
+description: Create concise sanitized continuation state for a later conversation. Use when the user asks to save progress, prepare a handoff, pause complex work, or make a future agent conversation resume from repository evidence.
 ---
 
 <!-- code-agent-template:managed -->
@@ -14,12 +14,11 @@ Persist only the minimum state another conversation needs.
 2. Copy `.agents/memory/state.template.md` to `.agents/memory/state.md` when the state file does not exist.
 3. Replace stale state with a concise current handoff. Link the active specification instead of duplicating it.
 4. Include only verified file, command, and status information.
-5. If the user explicitly enabled activity logging, append a sanitized outcome entry to `.agents/logs/activity.md` using the activity template.
-6. Re-read the result and remove secrets, tokens, credentials, personal data, private prompts, hidden reasoning, and transcript-like detail.
+5. Re-read the result and remove secrets, tokens, credentials, personal data, private prompts, hidden reasoning, and transcript-like detail.
 
 ## Output contract
 
-Write `.agents/memory/state.md` and report its path. Logging remains off unless explicitly requested.
+Write `.agents/memory/state.md` and report its path.
 
 ## Boundaries
 

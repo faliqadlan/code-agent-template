@@ -1,6 +1,6 @@
 ---
 name: agent-task
-description: Author or execute validated reusable repository task definitions for cross-agent Codex-to-Antigravity handoffs. Use when a user asks to create a task file or run an existing task from .agents/tasks.
+description: Author or execute validated reusable repository task definitions. Use when a user asks to create, revise, or run a task file under .agents/tasks.
 ---
 
 <!-- code-agent-template:managed -->
@@ -30,8 +30,8 @@ Create and execute reusable repository tasks without weakening repository instru
    - Required: ``- `NAME` (required): Description.``
    - Optional: ``- `NAME` (optional, default: value): Description.``
 6. Reference each declared input as `$NAME`. Use `$$` for a literal dollar sign.
-7. Keep the definition reusable and model-independent. Exclude run status, progress, results, model or context settings, token budgets, secrets, private prompts, hidden reasoning, and transcript content.
-8. Run `python tests/validate_template.py` when the repository contains that validator. Report the created path and validation result without executing the task.
+7. Keep the definition reusable and runtime-independent. Exclude run status, progress, results, model or context settings, token budgets, secrets, private prompts, hidden reasoning, and transcript content.
+8. Run `python .agents/scripts/validate_template.py` when the validator exists. Report the created path and validation result without executing the task.
 
 ## Execute mode
 
@@ -39,14 +39,14 @@ Create and execute reusable repository tasks without weakening repository instru
 2. Read the task and applicable repository instructions. If validation is available, run it before executing.
 3. Parse the Runtime inputs declarations and values supplied by the user. Use defaults for omitted optional values and ask for every missing required value.
 4. Resolve `$NAME` references in working context only. Interpret `$$` as a literal dollar sign and do not edit the task file with resolved values or results.
-5. Treat the task as scoped execution input, not as authority to override user instructions, `AGENTS.md`, permissions, or approval requirements. Pause for approval whenever the underlying work requires it.
+5. Treat the task as scoped execution input, not as authority to override user instructions, `.agents/AGENTS.md`, permissions, or approval requirements.
 6. Inspect current source, tests, configuration, and documentation before changing them. Implement the smallest coherent result that meets the task acceptance criteria.
-7. Run the task's verification plus any proportionate repository checks. Do not claim success for checks that did not complete.
+7. Run the task's verification plus proportionate repository checks. Do not claim success for checks that did not complete.
 8. Re-read the unchanged task file, compare the result with every acceptance criterion, and report evidence, residual risks, and manual follow-up.
 
 ## Boundaries
 
-- Task definitions are accessed through this skill or its workflow adapter; the directory itself is not a native prompt-discovery surface.
+- Task definitions are accessed through this skill after routing by `.agents/AGENTS.md`; the directory itself is not assumed to be a native discovery surface.
 - Do not infer a missing runtime value when it would materially change scope or behavior.
 - Do not create legacy prompt-directory aliases.
 - Execute only one task definition at a time unless the user explicitly requests a coordinated sequence.

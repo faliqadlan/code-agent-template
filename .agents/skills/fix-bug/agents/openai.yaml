@@ -1,5 +1,0 @@
-# code-agent-template:managed
-interface:
-  display_name: "Fix Bug"
-  short_description: "Reproduce and fix a defect with regression coverage."
-  default_prompt: "Diagnose and fix this bug with appropriate verification."

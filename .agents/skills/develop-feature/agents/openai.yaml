@@ -1,5 +1,0 @@
-# code-agent-template:managed
-interface:
-  display_name: "Develop Feature"
-  short_description: "Plan, implement, and verify a repository feature."
-  default_prompt: "Develop this feature using the repository workflow."

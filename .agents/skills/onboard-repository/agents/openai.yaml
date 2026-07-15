@@ -1,5 +1,0 @@
-# code-agent-template:managed
-interface:
-  display_name: "Onboard Repository"
-  short_description: "Inspect a repository and create verified project context."
-  default_prompt: "Analyze this repository and update its verified project context."

@@ -1,4 +1,0 @@
-interface:
-  display_name: "Agent Task"
-  short_description: "Author or execute reusable cross-agent repository tasks."
-  default_prompt: "Author or execute a validated reusable task from .agents/tasks."

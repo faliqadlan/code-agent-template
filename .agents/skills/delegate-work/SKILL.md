@@ -1,6 +1,6 @@
 ---
 name: delegate-work
-description: Delegate genuinely independent repository work to constrained researcher, reviewer, or test-runner roles and synthesize their results. Use when the user explicitly requests parallel agents or when a complex task has independent read, review, or verification tracks that benefit from isolated context.
+description: Delegate genuinely independent repository research, review, or verification to constrained roles and synthesize the results. Use when the user requests delegation or independent work benefits from isolated context.
 ---
 
 <!-- code-agent-template:managed -->
@@ -17,14 +17,16 @@ Use delegation to isolate independent work, not to avoid primary-agent responsib
 ## Process
 
 1. Confirm that at least two work items are independent or that the user explicitly requested delegation.
-2. Define one bounded outcome per subagent with the minimum paths, context, tools, and permissions needed.
-3. On Codex, use the matching project agent from `.codex/agents/` when available.
-4. On Antigravity, dynamically define the matching role and disable write, MCP, or further delegation tools unless the role explicitly needs them and the parent is already authorized.
-5. Avoid having multiple write-capable agents edit the same files. Prefer isolated worktrees when supported and justified.
-6. Wait for results, validate their evidence, resolve contradictions, and perform final synthesis in the primary agent.
+2. Choose the matching role and read its complete contract.
+3. Use any available subagent mechanism to create one bounded outcome per delegated task.
+4. Inject the selected role contract, repository boundary, required evidence, and task-specific constraints into the delegated prompt.
+5. Apply the narrowest available tools and permissions. If the runtime cannot technically enforce a restriction, keep it as an explicit instruction and report that limitation.
+6. Prevent delegated agents from expanding scope, contacting external systems, or delegating again unless the parent task explicitly authorizes it.
+7. Avoid overlapping writes. Prefer read-only delegation and isolate write-capable work when supported and justified.
+8. Wait for results, validate their evidence, resolve contradictions, and perform final synthesis in the primary agent.
 
 ## Boundaries
 
-- Subagents inherit the parent task's scope and approval boundaries; never broaden them.
-- Architectural decisions, user questions, and final claims remain with the primary agent.
+- Delegated agents inherit the parent task's scope and approval boundaries; never broaden them.
+- Architectural decisions, user questions, mutations, and final claims remain with the primary agent unless explicitly assigned and authorized.
 - Do not delegate small sequential tasks where coordination costs exceed the benefit.
