@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the operational .agents 2.1 package and optional maintainer tooling."""
+"""Validate the operational .agents 2.2 package and optional maintainer tooling."""
 
 # code-agent-template:managed
 
@@ -13,7 +13,8 @@ import re
 import shutil
 import subprocess
 import sys
-from pathlib import Path
+from datetime import datetime, timezone
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
@@ -65,6 +66,24 @@ LEGACY_RUNTIME_PATHS = (
     ".agents/LICENSE",
 )
 EXECUTABLE_SUFFIXES = {".bat", ".cmd", ".js", ".ps1", ".py", ".sh"}
+SOURCE_FIELDS = {
+    "schema_version",
+    "catalog_url",
+    "source_url",
+    "source_revision",
+    "source_path",
+    "classification",
+    "license",
+    "validated_with",
+    "validated_at",
+}
+SOURCE_REVISION_PATTERN = re.compile(r"^(?:[0-9a-f]{40}|[0-9a-f]{64})$")
+SOURCE_REPOSITORY_PATTERN = re.compile(
+    r"^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:\.git)?/?$"
+)
+CATALOG_URL_PATTERN = re.compile(
+    r"^https://(?:officialskills\.sh(?:/|$)|github\.com/VoltAgent/awesome-agent-skills(?:[/#?]|$))"
+)
 LEGACY_PATHS = (
     ".ai/prompts/",
     ".agents/workflows/",
@@ -514,6 +533,7 @@ class Validator:
                 self.error(f"{self.display(skill)}: SKILL.md must stay under 500 lines")
             if directory.name in core_skills and metadata.get("license") != "MIT":
                 self.error(f"{self.display(skill)}: core skills must declare license: MIT")
+            self.validate_skill_source(directory)
         if self.strict_skills:
             executable = shutil.which("skills-ref")
             if not executable:
@@ -535,6 +555,75 @@ class Validator:
                     if result.returncode:
                         detail = (result.stdout + result.stderr).strip()
                         self.error(f"{self.display(skill.parent)}: skills-ref failed: {detail}")
+
+    def validate_skill_source(self, directory: Path) -> None:
+        path = directory / "SOURCE.json"
+        if not path.exists():
+            return
+        if not path.is_file():
+            self.error(f"{self.display(path)}: provenance sidecar must be a regular file")
+            return
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            self.error(f"{self.display(path)}: invalid JSON: {exc}")
+            return
+        if not isinstance(data, dict):
+            self.error(f"{self.display(path)}: provenance sidecar must be an object")
+            return
+        if set(data) != SOURCE_FIELDS:
+            self.error(
+                f"{self.display(path)}: fields must be exactly {sorted(SOURCE_FIELDS)}"
+            )
+        if data.get("schema_version") != 1:
+            self.error(f"{self.display(path)}: schema_version must be 1")
+        catalog_url = data.get("catalog_url")
+        if not isinstance(catalog_url, str) or not CATALOG_URL_PATTERN.match(catalog_url):
+            self.error(
+                f"{self.display(path)}: catalog_url must reference officialskills.sh or "
+                "VoltAgent/awesome-agent-skills over HTTPS"
+            )
+        source_url = data.get("source_url")
+        if not isinstance(source_url, str) or not SOURCE_REPOSITORY_PATTERN.fullmatch(source_url):
+            self.error(f"{self.display(path)}: source_url must be an HTTPS GitHub repository URL")
+        revision = data.get("source_revision")
+        if not isinstance(revision, str) or not SOURCE_REVISION_PATTERN.fullmatch(revision):
+            self.error(f"{self.display(path)}: source_revision must be a 40- or 64-digit lowercase Git hash")
+        source_path = data.get("source_path")
+        source_parts = PurePosixPath(source_path).parts if isinstance(source_path, str) else ()
+        if (
+            not isinstance(source_path, str)
+            or not source_path
+            or source_path.startswith("/")
+            or "\\" in source_path
+            or ":" in source_path
+            or ".." in source_parts
+        ):
+            self.error(f"{self.display(path)}: source_path must be a safe relative POSIX path")
+        if data.get("classification") not in {"publisher-owned", "community"}:
+            self.error(f"{self.display(path)}: classification must be publisher-owned or community")
+        license_name = data.get("license")
+        if (
+            not isinstance(license_name, str)
+            or not (1 <= len(license_name) <= 200)
+            or not license_name.strip()
+            or license_name.strip().casefold() in {"unknown", "unclear", "none", "n/a"}
+        ):
+            self.error(f"{self.display(path)}: license must identify non-placeholder terms")
+        if data.get("validated_with") != "skills-ref":
+            self.error(f"{self.display(path)}: validated_with must be skills-ref")
+        validated_at = data.get("validated_at")
+        try:
+            timestamp = datetime.fromisoformat(validated_at.replace("Z", "+00:00"))
+        except (AttributeError, ValueError):
+            timestamp = None
+        if (
+            timestamp is None
+            or not isinstance(validated_at, str)
+            or not validated_at.endswith("Z")
+            or timestamp.tzinfo != timezone.utc
+        ):
+            self.error(f"{self.display(path)}: validated_at must be an ISO-8601 UTC timestamp ending in Z")
 
     def display_error_paths(self, errors: list[str]) -> list[str]:
         converted: list[str] = []
@@ -701,7 +790,7 @@ class Validator:
         if "# Universal Coding-Agent Template" not in text:
             return
         for required in (
-            "2.1.0",
+            self.manifest.get("template_version", ""),
             "manual-bootstrap",
             "python tooling/agents/scripts/validate_template.py",
             "--runtime-only",

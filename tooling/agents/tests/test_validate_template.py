@@ -3,6 +3,7 @@ from __future__ import annotations
 # code-agent-template:managed
 
 import importlib.util
+import json
 import shutil
 import tempfile
 import unittest
@@ -46,6 +47,37 @@ class TemplateValidatorTests(unittest.TestCase):
             runtime_only=runtime_only,
         ).run()
 
+    def add_extension_skill(
+        self,
+        root: Path,
+        *,
+        directory_name: str = "external-audit",
+        skill_name: str | None = None,
+    ) -> Path:
+        skill = root / ".agents/skills" / directory_name
+        skill.mkdir()
+        name = skill_name or directory_name
+        (skill / "SKILL.md").write_text(
+            f"---\nname: {name}\n"
+            "description: Use this skill when the user requests an external audit.\n"
+            "license: MIT\n---\n\n# External Audit\n\nInspect evidence.\n",
+            encoding="utf-8",
+        )
+        return skill
+
+    def valid_source(self) -> dict[str, object]:
+        return {
+            "schema_version": 1,
+            "catalog_url": "https://officialskills.sh/example/external-audit",
+            "source_url": "https://github.com/example/agent-skills",
+            "source_revision": "a" * 40,
+            "source_path": "skills/external-audit",
+            "classification": "publisher-owned",
+            "license": "MIT",
+            "validated_with": "skills-ref",
+            "validated_at": "2026-07-16T00:00:00Z",
+        }
+
     def test_shipped_template_passes(self) -> None:
         self.assertEqual([], self.validate(SOURCE_ROOT))
 
@@ -75,7 +107,7 @@ class TemplateValidatorTests(unittest.TestCase):
             (SOURCE_ROOT / ".agents/manifest.json").read_text(encoding="utf-8")
         )
         self.assertEqual(2, manifest["schema_version"])
-        self.assertEqual("2.1.0", manifest["template_version"])
+        self.assertEqual("2.2.0", manifest["template_version"])
         self.assertNotIn("python_requires", manifest)
         self.assertFalse(
             {"evaluations", "fixtures", "scripts", "tests"}
@@ -102,6 +134,57 @@ class TemplateValidatorTests(unittest.TestCase):
         )
         (root / ".agents/custom").mkdir()
         self.assertEqual([], self.validate(root))
+
+    def test_valid_external_skill_source_is_allowed(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        skill = self.add_extension_skill(root)
+        (skill / "SOURCE.json").write_text(
+            json.dumps(self.valid_source()),
+            encoding="utf-8",
+        )
+        self.assertEqual([], self.validate(root))
+
+    def test_malformed_external_skill_source_is_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        skill = self.add_extension_skill(root)
+        (skill / "SOURCE.json").write_text("{broken", encoding="utf-8")
+        self.assertTrue(any("invalid JSON" in error for error in self.validate(root)))
+
+    def test_unsafe_external_skill_source_path_is_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        skill = self.add_extension_skill(root)
+        source = self.valid_source()
+        source["source_path"] = "../outside"
+        (skill / "SOURCE.json").write_text(json.dumps(source), encoding="utf-8")
+        self.assertTrue(
+            any("safe relative POSIX path" in error for error in self.validate(root))
+        )
+
+    def test_external_skill_source_requires_strict_validation_record(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        skill = self.add_extension_skill(root)
+        source = self.valid_source()
+        source["validated_with"] = "manual-review"
+        (skill / "SOURCE.json").write_text(json.dumps(source), encoding="utf-8")
+        self.assertTrue(
+            any("validated_with must be skills-ref" in error for error in self.validate(root))
+        )
+
+    def test_skill_name_collision_is_rejected(self) -> None:
+        temporary, root = self.make_root()
+        self.addCleanup(temporary.cleanup)
+        self.add_extension_skill(
+            root,
+            directory_name="review-code-copy",
+            skill_name="review-code",
+        )
+        self.assertTrue(
+            any("name must match parent directory" in error for error in self.validate(root))
+        )
 
     def test_malformed_yaml_is_rejected(self) -> None:
         temporary, root = self.make_root()

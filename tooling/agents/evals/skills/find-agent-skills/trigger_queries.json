@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "skill_name": "find-agent-skills",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "find-agent-skills-p1",
+      "query": "Find an official Agent Skill for PostgreSQL development.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p2",
+      "query": "Compare external Agent Skills that could help with Terraform reviews.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p3",
+      "query": "Search officialskills.sh for a maintained accessibility skill.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p4",
+      "query": "Stage this external Agent Skill for inspection without installing it.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p5",
+      "query": "Find and safely install an Agent Skill for ClickHouse.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p6",
+      "query": "No installed skill covers Kubernetes operations; look for a suitable external skill.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-p7",
+      "query": "Recommend a community Agent Skill only if no publisher-owned option exists.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-p8",
+      "query": "Audit the source and license of this catalog skill before adding it.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-p9",
+      "query": "Locate an Agent Skills specification-compliant workflow for Firebase.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-p10",
+      "query": "We lack a local mobile testing skill; ask before searching a public skill catalog.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-n1",
+      "query": "Review this diff without making changes.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n2",
+      "query": "Implement a local caching feature and add tests.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n3",
+      "query": "Which Python package should this application use for parsing TOML?",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n4",
+      "query": "Explain how the installed review-code skill works.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n5",
+      "query": "Use the existing review-code skill on the current branch.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n6",
+      "query": "Inspect this repository and populate verified project context.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-n7",
+      "query": "Generate the human-facing README source from verified project context.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-n8",
+      "query": "Prepare a versioned assignment for another agent.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "find-agent-skills-n9",
+      "query": "Fix the reproducible authentication regression.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "find-agent-skills-n10",
+      "query": "Verify the existing interface at mobile and desktop widths.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}
+

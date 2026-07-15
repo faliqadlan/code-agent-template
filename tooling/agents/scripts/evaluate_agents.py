@@ -445,6 +445,7 @@ def prepare_runs(args: argparse.Namespace) -> int:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
+    suite_version = load_json(root / TOOLING_ROOT_REL / "manifest.json")["tooling_version"]
     profile = getattr(args, "profile", "smoke")
     conditions_value = getattr(args, "conditions", None)
     if conditions_value is None:
@@ -539,7 +540,7 @@ def prepare_runs(args: argparse.Namespace) -> int:
             run_dir / "run.json",
             {
                 "schema_version": 1,
-                "suite_version": "2.1.0",
+                "suite_version": suite_version,
                 "case_id": case["id"],
                 "condition": condition,
                 "trial": trial,
@@ -568,6 +569,7 @@ def prepare_routing_runs(args: argparse.Namespace) -> int:
         for error in errors:
             print(f"ERROR: {error}")
         return 1
+    suite_version = load_json(root / TOOLING_ROOT_REL / "manifest.json")["tooling_version"]
     manifest = load_json(root / ".agents/manifest.json")
     skills = manifest["core"]["skills"]
     if args.skill:
@@ -633,7 +635,7 @@ def prepare_routing_runs(args: argparse.Namespace) -> int:
             run_dir / "run.json",
             {
                 "schema_version": 1,
-                "suite_version": "2.1.0",
+                "suite_version": suite_version,
                 "kind": "routing",
                 "query_id": query["id"],
                 "target_skill": skill,
@@ -1246,7 +1248,8 @@ def import_review(args: argparse.Namespace) -> int:
 def summarize(args: argparse.Namespace) -> int:
     runs = args.runs.resolve()
     root = args.root.resolve()
-    case_types = {case["id"]: case["case_type"] for case in core_cases(root)}
+    cases = core_cases(root)
+    case_types = {case["id"]: case["case_type"] for case in cases}
     rows: list[dict[str, Any]] = []
     for path in sorted(runs.rglob("grading.json")):
         grading = load_json(path)
@@ -1540,7 +1543,7 @@ def summarize(args: argparse.Namespace) -> int:
         release_reasons.append("held-out routing is unobservable")
     elif routing_accuracy < 0.9:
         release_reasons.append("held-out routing accuracy is below 90%")
-    if len(candidate_core) < 27 * 3:
+    if len(candidate_core) < len(cases) * 3:
         release_reasons.append("v2-full release trials are incomplete")
     if not core_pairs or core_matrix_gaps:
         release_reasons.append("core treatment/control matrix is incomplete")
@@ -1610,13 +1613,19 @@ def summarize(args: argparse.Namespace) -> int:
 
 
 def validate_command(args: argparse.Namespace) -> int:
-    errors = collect_validation_errors(args.root.resolve())
+    root = args.root.resolve()
+    errors = collect_validation_errors(root)
     if errors:
         for error in errors:
             print(f"ERROR: {error}")
         print(f"Evaluation contract validation failed with {len(errors)} error(s).")
         return 1
-    print("Evaluation contracts passed: 9 skills, trigger/output evals, and 27 integration cases.")
+    skills = len(load_json(root / ".agents/manifest.json")["core"]["skills"])
+    cases = len(core_cases(root))
+    print(
+        f"Evaluation contracts passed: {skills} skills, trigger/output evals, "
+        f"and {cases} integration cases."
+    )
     return 0
 
 

@@ -75,6 +75,14 @@ class EvaluationContractTests(unittest.TestCase):
         self.assertTrue((fixtures / "untrusted/prior-state.md").is_file())
         self.assertTrue((fixtures / "untrusted/candidate-a/README.md").is_file())
         self.assertTrue((fixtures / "untrusted/candidate-b/README.md").is_file())
+        catalog = evaluator.load_json(fixtures / "skill-catalog/catalog.json")
+        self.assertEqual(2, len(catalog["candidates"]))
+        self.assertTrue(
+            (fixtures / "skill-catalog/candidates/postgres-guide/SKILL.md").is_file()
+        )
+        self.assertTrue(
+            (fixtures / "skill-catalog/candidates/unsafe-installer/scripts/install.sh").is_file()
+        )
 
     def test_prepare_excludes_eval_and_test_definitions(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -101,6 +109,9 @@ class EvaluationContractTests(unittest.TestCase):
             self.assertFalse((subject_agents / "LICENSE").exists())
             self.assertNotIn("v2-full", run_dirs[0].name)
             self.assertNotIn("condition", (run_dirs[0] / "subject/limits.json").read_text(encoding="utf-8"))
+            tooling_manifest = evaluator.load_json(SOURCE_ROOT / "tooling/agents/manifest.json")
+            run = evaluator.load_json(run_dirs[0] / "run.json")
+            self.assertEqual(tooling_manifest["tooling_version"], run["suite_version"])
 
     def test_deterministic_grade_blocks_unexpected_writes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

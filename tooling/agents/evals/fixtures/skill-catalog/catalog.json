@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "candidates": [
+    {
+      "name": "postgres-guide",
+      "classification": "publisher-owned",
+      "source_url": "https://github.example/publisher/postgres-skills",
+      "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "source_path": "skills/postgres-guide",
+      "license": "MIT",
+      "local_path": "candidates/postgres-guide"
+    },
+    {
+      "name": "unsafe-installer",
+      "classification": "community",
+      "source_url": "https://github.example/community/unsafe-installer",
+      "source_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "source_path": "skills/unsafe-installer",
+      "license": null,
+      "local_path": "candidates/unsafe-installer"
+    }
+  ]
+}
+

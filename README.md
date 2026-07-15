@@ -1,6 +1,6 @@
 # Universal Coding-Agent Template
 
-Version 2.1.0 is a manual-bootstrap, format-portable coding-agent package with a strict runtime/tooling boundary. The copyable `.agents/` directory contains only operational guidance, context, roles, skills, task contracts, memory templates, and one task-specific validator. Maintainer tests, graders, fixtures, and evaluation definitions live under `tooling/agents/` and are not part of runtime agent context.
+Version 2.2.0 is a manual-bootstrap, format-portable coding-agent package with a strict runtime/tooling boundary. The copyable `.agents/` directory contains only operational guidance, context, roles, skills, task contracts, memory templates, and one task-specific validator. Maintainer tests, graders, fixtures, and evaluation definitions live under `tooling/agents/` and are not part of runtime agent context.
 
 The package does not install dependencies, enable automation, create client-specific adapters, or claim native instruction discovery. Separating maintainer tooling reduces accidental context exposure; it does not eliminate hallucination or provide a security boundary.
 
@@ -77,6 +77,44 @@ repository evidence. Do not modify the root README.md.
 ```
 
 Review the generated source and manually copy or merge it into the root README.
+
+## External Agent Skill discovery
+
+`find-agent-skills` keeps installed project skills first. An explicit request to find, compare, review, or install an Agent Skill authorizes only a sanitized public catalog search. When the router infers a local capability gap, it must state the gap and proposed generic query, then wait for permission before contacting a catalog. Repository code, paths, credentials, private identifiers, customer data, and proprietary task details are never search inputs.
+
+[AgentSkills.io](https://agentskills.io/home) defines the portable skill format and validation rules; it is not a registry. [officialskills.sh](https://officialskills.sh/) is a browsable frontend for the [VoltAgent Awesome Agent Skills](https://github.com/VoltAgent/awesome-agent-skills) collection, so they are treated as two views of one community-maintained catalog rather than independent evidence. Catalog entries and candidate repositories remain untrusted.
+
+Discovery returns at most three publisher-first candidates with canonical source, pinned revision, license, requirements, and risks. Installation is a separate staged workflow:
+
+1. Fetch the pinned candidate into temporary storage outside the repository and inspect every bundled resource without executing it.
+2. Require the already-installed official reference validator to pass:
+
+   ```text
+   skills-ref validate <staged-skill>
+   ```
+
+3. Present the inventory, provenance, license, validation result, collision check, and risks; wait for a second explicit approval even if the original request asked to install.
+4. Copy only the approved skill into `.agents/skills/<name>`, preserve upstream licensing, add `SOURCE.json`, validate again, and do not activate the skill automatically.
+
+If `skills-ref` is unavailable, discovery and review may complete but installation remains blocked. The workflow never runs `npx skills add`, installs a validator or dependency, overwrites a local skill, installs globally, or executes candidate content.
+
+An external skill's optional `SOURCE.json` contains exactly:
+
+```json
+{
+  "schema_version": 1,
+  "catalog_url": "https://officialskills.sh/<entry>",
+  "source_url": "https://github.com/<owner>/<repository>",
+  "source_revision": "<40-or-64-digit-lowercase-git-hash>",
+  "source_path": "<relative-posix-skill-path>",
+  "classification": "publisher-owned",
+  "license": "<identified-license>",
+  "validated_with": "skills-ref",
+  "validated_at": "<iso-8601-utc-timestamp-ending-in-Z>"
+}
+```
+
+`classification` may be `publisher-owned` or `community`. The sidecar records discovery provenance and observed validation; it is not a publisher-identity, safety, compatibility, or quality guarantee.
 
 ## Continuation state
 
@@ -211,3 +249,5 @@ The repository root [LICENSE](LICENSE) is the sole license file. Core skills ret
 - [Agent Skills specification](https://agentskills.io/specification)
 - [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions)
 - [Evaluating skill output quality](https://agentskills.io/skill-creation/evaluating-skills)
+- [officialskills.sh directory and disclaimer](https://officialskills.sh/about)
+- [VoltAgent Awesome Agent Skills](https://github.com/VoltAgent/awesome-agent-skills)

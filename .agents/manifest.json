@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "template_version": "2.1.0",
+  "template_version": "2.2.0",
   "core": {
     "files": [
       ".gitignore",
@@ -16,6 +16,7 @@
       "agent-task",
       "delegate-work",
       "develop-feature",
+      "find-agent-skills",
       "fix-bug",
       "generate-readme",
       "onboard-repository",

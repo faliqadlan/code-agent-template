@@ -1,8 +1,8 @@
 # Evidence Review for `.agents` v2
 
 **Review type:** Scoped evidence review, not an exhaustive systematic or PRISMA review
-**Access date:** 2026-07-15
-**Decision target:** Universal Coding-Agent Template 2.1.0
+**Access date:** 2026-07-16
+**Decision target:** Universal Coding-Agent Template 2.2.0
 
 ## Method
 
@@ -25,6 +25,7 @@ The review prioritized normative specifications, official engineering guidance, 
 | 11 | NIST AI 100-2 E2025 | Standard terminology covers direct/indirect prompt injection, poisoning, agent threats, and mitigation limits. | Use explicit trust boundaries, provenance, revalidation, and honest security limitations. | Taxonomy and guidance do not prescribe this exact file architecture. |
 | 12 | OWASP Agentic Top 10, 2026 | Agent goal hijacking, supply-chain compromise, memory/context poisoning, insecure inter-agent communication, and cascading failures are material risks. | Sanitize handoffs, reject transferred authority, prevent nested delegation, and separate policy adherence from sandbox enforcement. | Community risk framework, not a certification regime. |
 | 13 | Official guidance: Adding Agent Skills support, accessed 2026-07-16 | Clients may list bundled skill resources and resolve relative files from the skill directory. | Keep runtime skill resources narrowly relevant and move maintainer eval definitions outside the distributable `.agents/` package. | Implementations vary; external tooling remains discoverable to agents with unrestricted repository access. |
+| 14 | Community directory disclosure: officialskills.sh and VoltAgent Awesome Agent Skills, accessed 2026-07-16 | officialskills.sh is a frontend for the VoltAgent collection, includes publisher and community entries, and explicitly disclaims guarantees of safety, quality, or behavior. | Treat both surfaces as one discovery source, inspect canonical repositories, prefer publisher-owned sources, and never treat catalog inclusion as trust. | Curation and publisher labels are not cryptographic provenance or independent review. |
 
 ## Key conflicts and synthesis
 
@@ -41,6 +42,16 @@ Agent clients may disclose or enumerate resources bundled beside `SKILL.md`. Ver
 The only executable retained in `.agents/` is the `agent-task` contract validator under that skill's `scripts/` resource. It is relevant only after the skill activates and is also imported by the full maintainer validator, preventing duplicate task-contract implementations. The operational manifest contains no Python, test, fixture, evaluation, or maintainer-tooling fields.
 
 This separation reduces accidental prompt and resource exposure but cannot prevent an agent from discovering maintainer files through unrestricted repository tools. The bootstrap, trust boundaries, and runtime permissions remain necessary.
+
+## Version 2.2 external skill discovery
+
+Version 2.2 adds `find-agent-skills` as a local-first, progressively loaded workflow. AgentSkills.io remains the normative format and validation source, while officialskills.sh and VoltAgent Awesome Agent Skills are treated as a single community-maintained discovery catalog. The workflow prefers publisher-owned canonical repositories and uses community candidates only as a labeled fallback.
+
+An explicit discovery request authorizes a sanitized public lookup. An inferred local gap only activates the skill far enough to describe the gap and request network permission; it never silently sends repository or private context to a catalog. Discovery, installation, and execution remain separate grants.
+
+Candidate installation is staged outside the repository at an exact source revision. Every bundled file is inspected as untrusted evidence and no candidate command, script, hook, or installer is executed. Installation requires successful `skills-ref` validation, a known license, no local name collision, and a second explicit approval after the inspection report. `SOURCE.json` records the catalog view, canonical repository, pinned revision, source path, classification, license, validator, and timestamp without modifying upstream `SKILL.md`.
+
+This design deliberately avoids a runtime installer, dependency, background updater, or `npx skills add` command. Reference validation establishes only structural Agent Skills conformance; catalog curation, publisher labels, source inspection, and Markdown restrictions do not establish safety or identity.
 
 ## Evaluation interpretation
 
@@ -75,3 +86,5 @@ Results must never be pooled to conceal a failing runtime. Public fixture cases 
 11. [NIST AI 100-2 E2025](https://doi.org/10.6028/NIST.AI.100-2e2025)
 12. [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
 13. [Adding Agent Skills support](https://agentskills.io/client-implementation/adding-skills-support)
+14. [officialskills.sh: About and disclaimer](https://officialskills.sh/about)
+15. [VoltAgent Awesome Agent Skills](https://github.com/VoltAgent/awesome-agent-skills)

@@ -31,13 +31,14 @@ Load only what the request needs:
 - Immutable cross-agent assignment, only through `agent-task`: `.agents/tasks/`
 - Continuation state, only for an explicit resume, save, or handoff request: `.agents/memory/state.md`
 
-Read a selected `SKILL.md` completely before acting. If no skill matches, use this agreement and repository evidence rather than forcing one.
+Read a selected `SKILL.md` completely before acting. If no local skill matches and a specialized external procedure could materially help, load `find-agent-skills` only to describe the gap and request permission before any catalog access. Otherwise use this agreement and repository evidence rather than forcing a skill.
 
 ## Skill routing
 
 - Versioned cross-agent assignment: `agent-task`
 - Independent delegated research, review, or verification: `delegate-work`
 - Feature or enhancement: `develop-feature`
+- External Agent Skill discovery, comparison, staged review, or approved installation: `find-agent-skills`
 - Reproducible defect: `fix-bug`
 - Human-facing README source: `generate-readme`
 - Verified repository context: `onboard-repository`

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "tooling_version": "2.1.0",
+  "tooling_version": "2.2.0",
   "python_requires": ">=3.10",
   "scripts": [
     "scripts/evaluate_agents.py",
@@ -14,7 +14,7 @@
   "evaluations": {
     "integration_suite": "evals/cases/core.json",
     "skill_eval_root": "evals/skills",
-    "integration_cases": 27,
+    "integration_cases": 30,
     "routing_queries_per_skill": 20,
     "output_cases_per_skill": 2,
     "fixtures": [
@@ -23,6 +23,7 @@
       "initialized",
       "modules",
       "routing",
+      "skill-catalog",
       "task-required",
       "ui",
       "untrusted"
