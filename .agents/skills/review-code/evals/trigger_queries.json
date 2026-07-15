@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "review-code",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "review-code-p1",
+      "query": "Review this diff without making changes.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p2",
+      "query": "Inspect the branch for correctness and security regressions.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p3",
+      "query": "Perform a read-only review of commit abc123.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p4",
+      "query": "Find actionable issues in these files and cite evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p5",
+      "query": "Review the pull request for missing tests.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p6",
+      "query": "Audit this patch for compatibility risks only.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-p7",
+      "query": "Check the implementation for concrete maintainability defects.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-p8",
+      "query": "Give me a severity-ranked code review.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-n1",
+      "query": "Fix every issue in this diff.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n2",
+      "query": "Implement the requested feature.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n3",
+      "query": "Verify the rendered page visually.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n4",
+      "query": "Explain this function to me.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n5",
+      "query": "Run the tests and repair failures.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n6",
+      "query": "Create a task for another reviewer.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-n7",
+      "query": "Refactor this module for readability.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-n8",
+      "query": "Generate a README from the code.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-p9",
+      "query": "Perform a read-only review of the uncommitted changes.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "review-code-p10",
+      "query": "Identify concrete defects in this patch without fixing them.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "review-code-n9",
+      "query": "Apply all requested review fixes.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "review-code-n10",
+      "query": "Summarize how this module works.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

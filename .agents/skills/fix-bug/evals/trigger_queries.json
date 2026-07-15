@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "fix-bug",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "fix-bug-p1",
+      "query": "Fix the failing arithmetic test and add regression coverage.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p2",
+      "query": "The login form regressed; reproduce and correct the root cause.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p3",
+      "query": "Resolve this stack trace with the smallest safe patch.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p4",
+      "query": "Repair the incorrect parser behavior.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p5",
+      "query": "A test started failing after the last change; fix it.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p6",
+      "query": "Correct the null-handling defect and verify neighboring cases.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-p7",
+      "query": "Find why this command errors and implement the fix.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-p8",
+      "query": "Patch the reproducible race without unrelated refactoring.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-n1",
+      "query": "Explain what this error message means without editing files.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n2",
+      "query": "Review this bug-fix diff.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n3",
+      "query": "Add a new login feature.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n4",
+      "query": "Verify the current UI error state visually.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n5",
+      "query": "Write a bug report for another team.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n6",
+      "query": "Run the existing tests and report results only.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-n7",
+      "query": "Refactor the parser for readability.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-n8",
+      "query": "Document known defects in the README source.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-p9",
+      "query": "Reproduce the reported parser regression and apply the smallest covered fix.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-p10",
+      "query": "Correct this confirmed failure and add regression coverage.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "fix-bug-n9",
+      "query": "Explain this stack trace without changing anything.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "fix-bug-n10",
+      "query": "Implement a new endpoint that has not existed before.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

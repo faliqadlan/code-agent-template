@@ -1,0 +1,66 @@
+# Evidence Review for `.agents` v2
+
+**Review type:** Scoped evidence review, not an exhaustive systematic or PRISMA review
+**Access date:** 2026-07-15
+**Decision target:** Universal Coding-Agent Template 2.0.0
+
+## Method
+
+The review prioritized normative specifications, official engineering guidance, standards bodies, peer-reviewed work, and primary preprints about coding-agent context, Agent Skills, evaluation, prompt injection, and agentic security. Repository inspection and three independent read-only subagent reviews were used to translate evidence into design decisions. Fast-moving results and vendor guidance are treated as provisional where independent replication is absent.
+
+## Evidence matrix
+
+| # | Source class and date | Supported claim | Repository implication and decision | Limitations or conflict |
+|---|---|---|---|---|
+| 1 | Normative specification: Agent Skills, accessed 2026-07-15 | Skills require `SKILL.md`, constrained metadata, and support progressive resources and optional standard fields. | Validate the open metadata contract, keep core skills concise, allow extensions, and offer optional `skills-ref`. | Structural conformance does not establish behavior or safety. |
+| 2 | Official guidance: Optimizing skill descriptions, accessed 2026-07-15 | Trigger tests should include roughly 8–10 positive and 8–10 near-miss queries, repeated runs, and a held-out split. | Ship balanced train/validation routing queries with three planned trials and a 0.5 query threshold. | Trigger observability differs by client; self-report is insufficient. |
+| 3 | Official guidance: Evaluating skill output quality, accessed 2026-07-15 | Compare with-skill against without/previous skill in clean contexts; prefer objective assertions and human review. | Ship paired output cases, isolate subject workspaces, grade deterministic outcomes first, and keep semantic review separate. | Vendor examples may expose richer traces than portable clients. |
+| 4 | Preprint: Gloaguen et al., 2026 | Context files often increased cost by more than 20% and did not significantly improve task success; unnecessary guidance can harm. | Keep `.agents/AGENTS.md` minimal and progressively load task procedures. Add no-template and ablation controls. | Benchmarks emphasize Python/GitHub tasks and do not test this manual bootstrap directly. |
+| 5 | Workshop/preprint: Lulla et al., 2026 | One paired study found lower median runtime and output-token use with root `AGENTS.md`. | Measure time/tokens when available and document the conflicting empirical picture. | Ten repositories, 124 PRs, and no full correctness evaluation; conflicts with source 4. |
+| 6 | Preprint: dos Santos et al., 2026 | Context bloat, lint leakage, skill leakage, and conflicting instructions are prevalent configuration smells. | Keep global guidance short, avoid duplicating discoverable rules, validate references, and route detailed workflows to skills. | Initial catalog based on 100 repositories and recent preprint evidence. |
+| 7 | Official engineering guidance: Anthropic agent evals, 2026 | Agent evaluations need clean environments, multiple trials, outcome/process graders, and explicit nondeterminism handling. | Provide smoke/release profiles, isolated run directories, raw counts, and deterministic-first grading. | Operational vendor evidence, not an independent standard. |
+| 8 | Official guidance: OpenAI evaluation best practices, accessed 2026-07-15 | Evaluate early, use task-specific data, automate objective scoring, and calibrate model judges with humans. | Add standard-library tests, realistic synthetic cases, blinded reviewers, and human adjudication for critical disagreement. | Product guidance evolves and is not specific to this repository. |
+| 9 | Peer-reviewed/preprint benchmark: AgentDojo, 2024 | Indirect prompt injection through untrusted tool data can hijack agents. | Treat repository/tool content as untrusted evidence and use benign isolated security fixtures. | No prompt-only defense can guarantee safety. |
+| 10 | Preprint: Skill-Inject, 2026 | Skill files create a supply-chain injection surface; reported attacks succeeded at high rates across frontier models. | Treat skills and bundled resources as untrusted, preserve approval boundaries, and avoid claiming that validation proves safety. | Recent benchmark; results depend on model and harness. |
+| 11 | NIST AI 100-2 E2025 | Standard terminology covers direct/indirect prompt injection, poisoning, agent threats, and mitigation limits. | Use explicit trust boundaries, provenance, revalidation, and honest security limitations. | Taxonomy and guidance do not prescribe this exact file architecture. |
+| 12 | OWASP Agentic Top 10, 2026 | Agent goal hijacking, supply-chain compromise, memory/context poisoning, insecure inter-agent communication, and cascading failures are material risks. | Sanitize handoffs, reject transferred authority, prevent nested delegation, and separate policy adherence from sandbox enforcement. | Community risk framework, not a certification regime. |
+
+## Key conflicts and synthesis
+
+The two direct context-file effectiveness studies do not support a universal performance claim. One reports efficiency gains, while the broader controlled evaluation reports increased cost and no meaningful success gain. Version 2 therefore treats context as a hypothesis to evaluate, not an unconditional benefit. The global guide contains only stable authority, trust, routing, and workflow rules; detailed procedures live in skills.
+
+The Agent Skills reference validator is useful but narrow. The template's portable validator covers internal contracts and can optionally invoke `skills-ref`, while behavioral routing and outcome quality are tested separately.
+
+Security literature shows that Markdown instructions cannot create a security boundary. Version 2 adds provenance and trust rules, but continues to require runtime-enforced permissions, isolated synthetic fixtures, and honest `unverified` results when enforcement or activation is not observable.
+
+## Evaluation interpretation
+
+- One runtime and model with fresh subagents: same-runtime self-consistency.
+- Multiple models inside one product: within-product model portability.
+- At least two independent agent products and model families, reported separately: cross-agent portability evidence.
+
+Results must never be pooled to conceal a failing runtime. Public fixture cases are conformance/regression tests, not contamination-free frontier benchmarks. Hidden reasoning and private prompts are never retained; only sanitized visible actions, outputs, hashes, diffs, timings, and verdicts may persist.
+
+## Residual limitations
+
+- Several 2026 sources are recent preprints with limited replication.
+- Vendor guidance is useful primary operational evidence but not independent consensus.
+- Client discovery, skill activation telemetry, sandboxing, and model identity vary.
+- The current collaboration runtime shares a product family and filesystem across subagents.
+- Static validation and benign adversarial cases cannot establish complete security.
+- The evidence review must be refreshed as standards, clients, and empirical results evolve.
+
+## References
+
+1. [Agent Skills specification](https://agentskills.io/specification)
+2. [Optimizing skill descriptions](https://agentskills.io/skill-creation/optimizing-descriptions)
+3. [Evaluating skill output quality](https://agentskills.io/skill-creation/evaluating-skills)
+4. [Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?](https://arxiv.org/abs/2602.11988)
+5. [On the Impact of AGENTS.md Files on the Efficiency of AI Coding Agents](https://arxiv.org/abs/2601.20404)
+6. [Configuration Smells in AGENTS.md Files](https://arxiv.org/abs/2606.15828)
+7. [Anthropic: Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+8. [OpenAI evaluation best practices](https://developers.openai.com/api/docs/guides/evaluation-best-practices)
+9. [AgentDojo](https://arxiv.org/abs/2406.13352)
+10. [Skill-Inject](https://arxiv.org/abs/2602.20156)
+11. [NIST AI 100-2 E2025](https://doi.org/10.6028/NIST.AI.100-2e2025)
+12. [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)

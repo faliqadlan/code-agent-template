@@ -1,0 +1,26 @@
+:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+}
+
+body {
+  display: grid;
+  min-height: 100vh;
+  margin: 0;
+  place-items: center;
+  background: #eef2f7;
+}
+
+.panel {
+  box-sizing: border-box;
+  width: min(42rem, calc(100% - 2rem));
+  padding: 2rem;
+  border-radius: 1rem;
+  background: white;
+}
+
+@media (max-width: 30rem) {
+  .panel {
+    padding: 1.25rem;
+  }
+}

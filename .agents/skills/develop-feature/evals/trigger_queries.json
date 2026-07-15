@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "develop-feature",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "develop-feature-p1",
+      "query": "Add an export button with tests.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p2",
+      "query": "Implement a new cache configuration option.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p3",
+      "query": "Enhance search to support quoted phrases.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p4",
+      "query": "Build the requested API endpoint and verify it.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p5",
+      "query": "Add keyboard navigation to the menu.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p6",
+      "query": "Introduce a low-risk CLI flag with coverage.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-p7",
+      "query": "Plan and implement this public feature after approval.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-p8",
+      "query": "Extend the repository with the described behavior.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-n1",
+      "query": "Explain how the search module works.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n2",
+      "query": "Diagnose this failure but do not fix it.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n3",
+      "query": "Review the proposed endpoint without changes.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n4",
+      "query": "Verify the existing UI at mobile width only.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n5",
+      "query": "Fix the regression in the current cache.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n6",
+      "query": "Generate the project README source.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-n7",
+      "query": "Save a handoff for unfinished work.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-n8",
+      "query": "Document the current repository architecture.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-p9",
+      "query": "Add a parser option and focused tests to the existing command.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-p10",
+      "query": "Enhance the module with a small backward-compatible behavior change.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "develop-feature-n9",
+      "query": "Review the feature proposal without implementing it.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "develop-feature-n10",
+      "query": "Diagnose the unexpected behavior but do not edit files.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

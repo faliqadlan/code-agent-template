@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "generate-readme",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "generate-readme-p1",
+      "query": "Generate .agents/context/README.md from verified project context.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p2",
+      "query": "Refresh the human-facing README source without touching the root.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p3",
+      "query": "Create the project README source after onboarding.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p4",
+      "query": "Update the generated README draft from current evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p5",
+      "query": "Produce contributor documentation in the context README source.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p6",
+      "query": "Regenerate the README source from manifests and verified commands.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-p7",
+      "query": "Write an accurate user-facing project guide under .agents/context.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-p8",
+      "query": "Prepare the README source I can manually merge later.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-n1",
+      "query": "Overwrite the root README with this text.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n2",
+      "query": "Onboard this uninitialized repository.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n3",
+      "query": "Explain the current README.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n4",
+      "query": "Fix a typo in the existing root README.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n5",
+      "query": "Generate API reference documentation.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n6",
+      "query": "Review the README diff without changes.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-n7",
+      "query": "Save project progress for another session.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-n8",
+      "query": "Create a release changelog.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-p9",
+      "query": "Refresh .agents/context/README.md from the verified project context.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-p10",
+      "query": "Create the human-facing README source under .agents/context only.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "generate-readme-n9",
+      "query": "Rewrite the repository root README.md.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "generate-readme-n10",
+      "query": "Onboard the repository and populate project context only.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

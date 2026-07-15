@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "delegate-work",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "delegate-work-p1",
+      "query": "Delegate two independent module reviews and synthesize them.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p2",
+      "query": "Use separate subagents to research the parser and validator.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p3",
+      "query": "Have independent reviewers inspect security and compatibility.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p4",
+      "query": "Parallelize these three unrelated read-only investigations.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p5",
+      "query": "Ask a test-runner subagent and a reviewer subagent for evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p6",
+      "query": "Split this broad audit into bounded independent research tasks.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-p7",
+      "query": "Use fresh agents to verify separate fixtures, then reconcile results.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-p8",
+      "query": "I explicitly want this repository research delegated.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-n1",
+      "query": "Read this one short file and summarize it.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n2",
+      "query": "Run one documented unit test.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n3",
+      "query": "Implement these dependent steps in order.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n4",
+      "query": "Make the final architecture decision for me.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n5",
+      "query": "Ask the user a clarification question.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n6",
+      "query": "Fix this tiny typo locally.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-n7",
+      "query": "Create a reusable task for another model.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-n8",
+      "query": "Review one ten-line diff yourself.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-p9",
+      "query": "Have independent agents review two unrelated modules and synthesize their evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-p10",
+      "query": "Use two isolated reviewers for parallel read-only verification.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "delegate-work-n9",
+      "query": "Read these two adjacent lines and summarize them yourself.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "delegate-work-n10",
+      "query": "Perform one small sequential repository check.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

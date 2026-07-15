@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "delegate-work",
+  "evals": [
+    {
+      "id": "delegate-work-parallel-research",
+      "integration_case_id": "delegate-work-parallel-review",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Delegate two independent read-only questions and synthesize evidence.",
+      "expected_output": "Bounded delegation, no nested delegation, and primary synthesis.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "delegate-work-sequential-control",
+      "integration_case_id": "delegate-work-no-recursion",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Handle a tiny sequential request without delegating.",
+      "expected_output": "A local answer with no unnecessary subagent.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

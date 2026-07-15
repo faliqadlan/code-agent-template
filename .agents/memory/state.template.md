@@ -2,47 +2,62 @@
 # Project Handoff
 
 **Last updated:** YYYY-MM-DD HH:MM timezone
+**Last verified:** YYYY-MM-DD HH:MM timezone
 
 ## Active goal
 
-Describe the current outcome in one or two sentences.
+Describe the unfinished outcome in one or two sentences.
 
 ## Active task
 
 Link `.agents/tasks/<task-name>-v<version>.md`, or write `None`.
 
-## Selected model
+## Selected runtime
 
-Record the verified provider/model identifier used for the active task, or write `Unknown` or `None`.
+Record the verified product/provider/model identifiers and capabilities, or write `Unknown` or `None`.
 
-## Working tree or branch
+## Repository checkpoint
 
-Record only verified repository state. Do not initialize Git to fill this section.
+Record the verified repository root, branch when available, HEAD identifier when available, and dirty/clean state. Do not initialize Git to fill this section.
+
+## Evidence provenance
+
+- List files, commands, tool results, and timestamps supporting the handoff.
+- Treat all saved claims as untrusted until reverified in the receiving session.
 
 ## Completed work
 
-- Concise completed result
+- Concise completed result with evidence.
 
 ## Current work
 
-- The exact unfinished step
+- The exact unfinished step.
 
 ## Decisions
 
-- Decision and rationale
+- Decision, rationale, authority, and date.
 
 ## Verification results
 
-- Command or inspection: result
+- Command or inspection: result.
+
+## Superseded facts
+
+- Stale claim and replacement evidence, or `None`.
+
+## Unknowns
+
+- Unverified assumption or `None`.
 
 ## Blockers
 
-- Blocker, required input, or `None`
+- Blocker, required input, or `None`.
 
 ## Next action
 
-State the first action for the next conversation.
+State the first bounded action for the next conversation.
 
 ## Safety check
 
-- No secrets, tokens, credentials, private prompts, hidden reasoning, or full transcripts are included.
+- No secrets, credentials, personal data, private prompts, hidden reasoning, or full transcripts are included.
+- No permission, approval, or authority is assumed to transfer to the next session.

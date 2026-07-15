@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "verify-ui",
+  "evals": [
+    {
+      "id": "verify-ui-rendered",
+      "integration_case_id": "verify-ui-visual-check",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Inspect rendered states read-only.",
+      "expected_output": "Viewport/state evidence and no modifications.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "verify-ui-unavailable",
+      "integration_case_id": "verify-ui-browser-missing",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Handle unavailable browser tooling.",
+      "expected_output": "A limitation report without installation or edits.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

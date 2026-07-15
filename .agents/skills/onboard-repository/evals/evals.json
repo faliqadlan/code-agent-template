@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "onboard-repository",
+  "evals": [
+    {
+      "id": "onboard-repository-verified-context",
+      "integration_case_id": "onboard-repository-populate-context",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Populate project context from a synthetic repository.",
+      "expected_output": "Evidence-backed context only.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "onboard-repository-ambiguous-root",
+      "integration_case_id": "onboard-repository-ambiguous-root",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Handle two plausible repository roots.",
+      "expected_output": "A safe stop naming the ambiguity.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

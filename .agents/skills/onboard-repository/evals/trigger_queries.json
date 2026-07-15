@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "onboard-repository",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "onboard-repository-p1",
+      "query": "Inspect this repository and populate verified project context.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p2",
+      "query": "The project context is stale; refresh it from evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p3",
+      "query": "Document the stack, architecture, commands, and constraints.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p4",
+      "query": "Onboard this codebase before we start feature work.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p5",
+      "query": "Trace the primary flows and record them in project context.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p6",
+      "query": "Verify repository commands and update .agents/context/project.md.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-p7",
+      "query": "Establish evidence-backed orientation for this new repository.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-p8",
+      "query": "Refresh current capabilities and integrations from source.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-n1",
+      "query": "Summarize this single Python file.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n2",
+      "query": "Generate the README source from initialized context.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n3",
+      "query": "Implement a new endpoint.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n4",
+      "query": "Review the current branch.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n5",
+      "query": "Save an unfinished-work handoff.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n6",
+      "query": "List the top-level files without updating context.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-n7",
+      "query": "Explain what onboarding means.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-n8",
+      "query": "Run one test and report its status.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-p9",
+      "query": "Refresh stale project context from current repository evidence.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-p10",
+      "query": "Document the verified stack, architecture, and commands in project.md.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "onboard-repository-n9",
+      "query": "Generate the README source from already initialized context.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "onboard-repository-n10",
+      "query": "Summarize one file without creating persistent repository context.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

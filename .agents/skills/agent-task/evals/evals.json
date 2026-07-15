@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-task",
+  "evals": [
+    {
+      "id": "agent-task-author-versioned",
+      "integration_case_id": "agent-task-author-task",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Author and validate a versioned cross-agent task without executing it.",
+      "expected_output": "A valid immutable task definition and validation evidence.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "agent-task-execute-capability",
+      "integration_case_id": "agent-task-required-model",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Execute a task only after resolving capabilities and required model policy.",
+      "expected_output": "A truthful terminal outcome with no unauthorized fallback.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

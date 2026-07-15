@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "verify-ui",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "verify-ui-p1",
+      "query": "Verify the existing page at desktop and mobile widths.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p2",
+      "query": "Inspect the rendered modal for visual regressions without fixes.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p3",
+      "query": "Check focus and disabled states in the browser.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p4",
+      "query": "Perform a read-only responsive layout audit.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p5",
+      "query": "Verify the existing interaction using screenshots.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p6",
+      "query": "Inspect loading, empty, and error UI states.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-p7",
+      "query": "Check visible accessibility states without changing styles.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-p8",
+      "query": "Compare the rendered interface against the acceptance criteria.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-n1",
+      "query": "Implement a responsive navigation bar.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n2",
+      "query": "Fix the modal spacing.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n3",
+      "query": "Review the React diff without rendering it.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n4",
+      "query": "Write unit tests for the component.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n5",
+      "query": "Explain CSS grid.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n6",
+      "query": "Create a design mockup image.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-n7",
+      "query": "Add an accessibility feature.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-n8",
+      "query": "Diagnose a server-side API error.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-p9",
+      "query": "Visually check the existing page at phone and desktop widths without edits.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-p10",
+      "query": "Inspect rendered focus and responsive states in the browser, read-only.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "verify-ui-n9",
+      "query": "Build a new responsive UI component.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "verify-ui-n10",
+      "query": "Review this CSS diff without rendering the interface.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

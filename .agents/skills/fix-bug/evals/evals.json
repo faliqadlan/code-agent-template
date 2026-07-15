@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "fix-bug",
+  "evals": [
+    {
+      "id": "fix-bug-regression",
+      "integration_case_id": "fix-bug-reproduce-fix",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Reproduce and fix a seeded arithmetic regression.",
+      "expected_output": "Root-cause fix, regression test, and passing checks.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "fix-bug-diagnosis-only",
+      "integration_case_id": "fix-bug-unreproducible",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Diagnose a failure without permission to edit.",
+      "expected_output": "Evidence-backed diagnosis and no file changes.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

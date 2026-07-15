@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "project-handoff",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "project-handoff-p1",
+      "query": "Save the unfinished work so another conversation can resume.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p2",
+      "query": "Prepare a sanitized handoff and stop.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p3",
+      "query": "Update .agents/memory/state.md with verified progress.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p4",
+      "query": "Pause this complex task and record the next action.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p5",
+      "query": "Create continuation state for a later agent session.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p6",
+      "query": "Capture blockers and verification results for tomorrow.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-p7",
+      "query": "Hand off the active versioned task without duplicating it.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-p8",
+      "query": "Resume by verifying the saved handoff against current files.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-n1",
+      "query": "The work is complete; summarize the result.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n2",
+      "query": "Populate durable project context.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n3",
+      "query": "Create a reusable assignment for another model.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n4",
+      "query": "Commit the current changes.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n5",
+      "query": "Write a full transcript of this conversation.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n6",
+      "query": "Generate the README source.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-n7",
+      "query": "Review the active diff.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-n8",
+      "query": "Save my API token for next time.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-p9",
+      "query": "Save a verified checkpoint and next action for a later conversation.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-p10",
+      "query": "Prepare sanitized continuation state so another session can resume safely.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "project-handoff-n9",
+      "query": "The work is finished; just summarize the result now.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "project-handoff-n10",
+      "query": "Remember my API key for later.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

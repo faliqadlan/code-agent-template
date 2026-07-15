@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "generate-readme",
+  "evals": [
+    {
+      "id": "generate-readme-source-only",
+      "integration_case_id": "generate-readme-generate-source",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Generate a README source from initialized evidence.",
+      "expected_output": "Only .agents/context/README.md changes with verified claims.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "generate-readme-uninitialized",
+      "integration_case_id": "generate-readme-protect-root",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Attempt generation with uninitialized context.",
+      "expected_output": "A safe stop recommending onboarding first.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}

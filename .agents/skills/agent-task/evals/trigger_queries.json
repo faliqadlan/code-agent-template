@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "skill_name": "agent-task",
+  "runs_per_query": 3,
+  "trigger_threshold": 0.5,
+  "queries": [
+    {
+      "id": "agent-task-p1",
+      "query": "Prepare a reusable assignment for another coding agent.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p2",
+      "query": "Create version 1 of a cross-agent dependency audit task.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p3",
+      "query": "Revise the published migration assignment as its next immutable version.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p4",
+      "query": "Run .agents/tasks/api-audit-v2.md with TARGET=\"src/api\".",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p5",
+      "query": "Package this request so I can transfer it to another model.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p6",
+      "query": "Validate and publish a bounded agent task without executing it.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-p7",
+      "query": "Execute the existing versioned task and keep its definition unchanged.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-p8",
+      "query": "Author a capability-constrained assignment for a later conversation.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-n1",
+      "query": "Plan how you would refactor this function in our current chat.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n2",
+      "query": "Write a TODO list for today's work.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n3",
+      "query": "Save the unfinished implementation state for tomorrow.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n4",
+      "query": "Delegate two independent code reviews now.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n5",
+      "query": "Create a GitHub issue description.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n6",
+      "query": "Explain the task template without creating a task.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-n7",
+      "query": "Implement this small feature directly.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-n8",
+      "query": "Review the current diff without making changes.",
+      "should_trigger": false,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-p9",
+      "query": "Revise the published dependency-audit assignment as version 2 for another agent.",
+      "should_trigger": true,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-p10",
+      "query": "Create a capability-gated cross-agent task file, validate it, and do not run it.",
+      "should_trigger": true,
+      "split": "validation"
+    },
+    {
+      "id": "agent-task-n9",
+      "query": "Write a checklist for my own use in this conversation.",
+      "should_trigger": false,
+      "split": "train"
+    },
+    {
+      "id": "agent-task-n10",
+      "query": "Plan today's edits without creating a reusable assignment contract.",
+      "should_trigger": false,
+      "split": "validation"
+    }
+  ]
+}

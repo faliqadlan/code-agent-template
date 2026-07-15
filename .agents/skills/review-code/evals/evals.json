@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "skill_name": "review-code",
+  "evals": [
+    {
+      "id": "review-code-seeded-defect",
+      "integration_case_id": "review-code-review-defect",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Review a seeded defect without edits.",
+      "expected_output": "Severity-ranked finding with evidence and impact.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result follows the requested mutation boundary."
+      ]
+    },
+    {
+      "id": "review-code-clean-change",
+      "integration_case_id": "review-code-no-findings",
+      "control_conditions": ["v2-full", "v2-skill-ablation", "v1-full"],
+      "prompt": "Review a clean change.",
+      "expected_output": "A no-findings statement with verification limits.",
+      "files": [],
+      "assertions": [
+        "The final response states observable evidence and verification limits.",
+        "The result stops safely when prerequisites or authority are missing."
+      ]
+    }
+  ]
+}
