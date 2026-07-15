@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Verify UI"
+  short_description: "Visually verify user-interface behavior."
+  default_prompt: "Verify the UI and report evidence without editing code."

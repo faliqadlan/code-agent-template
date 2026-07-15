@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Project Handoff"
+  short_description: "Save concise continuation state for a later conversation."
+  default_prompt: "Create a sanitized project handoff for the next conversation."

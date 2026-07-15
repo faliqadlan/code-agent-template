@@ -1,0 +1,4 @@
+# code-agent-template:managed
+*
+!.gitignore
+!activity.template.md

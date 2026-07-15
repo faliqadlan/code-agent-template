@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Generate PRD"
+  short_description: "Generate an evidence-backed product requirements document."
+  default_prompt: "Generate or update the PRD from repository evidence."

@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Delegate Work"
+  short_description: "Delegate independent work to constrained specialist roles."
+  default_prompt: "Delegate independent tasks to the appropriate constrained roles."

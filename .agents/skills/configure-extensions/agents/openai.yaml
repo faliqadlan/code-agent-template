@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Configure Extensions"
+  short_description: "Safely scaffold plugins, MCP servers, and hooks."
+  default_prompt: "Create an inactive extension scaffold and validate it."

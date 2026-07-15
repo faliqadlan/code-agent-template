@@ -1,0 +1,5 @@
+# code-agent-template:managed
+interface:
+  display_name: "Verify PRD"
+  short_description: "Compare repository behavior with a PRD."
+  default_prompt: "Verify implementation against the PRD without editing code."
